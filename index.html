@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Altos de Peñafiel — Tu refugio natural en 77 hectáreas · Araucanía</title>
+<meta name="description" content="Altos de Peñafiel. 150 parcelas rústicas en 77 hectáreas. Nueva Imperial, Araucanía. Subdivisión autorizada, rol propio, exento de IVA. Desde $25 millones.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+:root{
+  --navy:#0B1C2C;
+  --navy2:#122336;
+  --stone:#F5F0E8;
+  --stone2:#EDE6D9;
+  --stone3:#E0D5C5;
+  --gold:#B8924A;
+  --gold2:#9A7835;
+  --gold-light:#F0DEB4;
+  --white:#FFFFFF;
+  --carbon:#1A1A1A;
+  --slate:#4A5568;
+  --muted:#8A8F99;
+  --border:#DDD6C8;
+  --dis:#1A6B35;
+  --res:#8B6914;
+  --ven:#8B1A1A;
+  --shadow-sm:0 2px 8px rgba(11,28,44,.06);
+  --shadow-md:0 8px 32px rgba(11,28,44,.1);
+  --shadow-lg:0 24px 64px rgba(11,28,44,.15);
+  --transition:.35s cubic-bezier(.4,0,.2,1);
+}
+body{font-family:'Jost',sans-serif;background:var(--white);color:var(--carbon);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+.reveal.up{opacity:1;transform:none}
+.reveal-left{opacity:0;transform:translateX(-28px);transition:opacity .8s ease,transform .8s ease}
+.reveal-left.up{opacity:1;transform:none}
+.reveal-right{opacity:0;transform:translateX(28px);transition:opacity .8s ease,transform .8s ease}
+.reveal-right.up{opacity:1;transform:none}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  height:76px;padding:0 4rem;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:background var(--transition),box-shadow var(--transition),height var(--transition);
+}
+nav.solid{
+  background:var(--white);
+  box-shadow:var(--shadow-sm);
+  height:68px;
+}
+.nav-logo{
+  font-family:'Playfair Display',serif;font-size:1.25rem;
+  font-weight:500;letter-spacing:.02em;color:var(--white);
+  transition:color var(--transition);text-decoration:none;display:flex;align-items:center;gap:.5rem;
+}
+nav.solid .nav-logo{color:var(--navy)}
+.nav-logo-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);margin-top:2px}
+.nav-links{display:flex;gap:2.5rem;list-style:none;align-items:center}
+.nav-links a{
+  color:rgba(255,255,255,.75);text-decoration:none;font-size:.78rem;
+  font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  transition:color var(--transition);position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;
+  height:1px;background:var(--gold);transform:scaleX(0);
+  transform-origin:left;transition:transform var(--transition);
+}
+.nav-links a:hover{color:white}
+.nav-links a:hover::after{transform:scaleX(1)}
+nav.solid .nav-links a{color:var(--slate)}
+nav.solid .nav-links a:hover{color:var(--navy)}
+.nav-cta{
+  background:var(--gold);color:var(--white)!important;
+  padding:.55rem 1.5rem;letter-spacing:.1em!important;
+  transition:background var(--transition)!important;
+}
+.nav-cta::after{display:none!important}
+.nav-cta:hover{background:var(--gold2)!important}
+nav.solid .nav-cta{color:var(--white)!important}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;border:none;background:none;padding:4px}
+.ham span{width:22px;height:1.5px;background:var(--white);display:block;transition:background var(--transition)}
+nav.solid .ham span{background:var(--navy)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,#071422 0%,#0B1C2C 40%,#122336 70%,#1a2e42 100%);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(184,146,74,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(184,146,74,.06) 1px,transparent 1px);
+  background-size:80px 80px;
+}
+.hero-glow{
+  position:absolute;top:-20%;left:-10%;
+  width:70%;height:70%;
+  background:radial-gradient(ellipse,rgba(184,146,74,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-content{
+  position:relative;z-index:1;
+  max-width:1200px;margin:0 auto;width:100%;
+  padding:0 4rem;padding-top:76px;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:4rem;align-items:center;min-height:100vh;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.8rem;
+  background:rgba(184,146,74,.12);border:1px solid rgba(184,146,74,.25);
+  padding:.45rem 1.1rem;margin-bottom:2rem;
+}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+.hero-badge span{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(3rem,5.5vw,5rem);font-weight:400;
+  color:var(--white);line-height:1.08;letter-spacing:-.01em;
+  margin-bottom:1.5rem;
+}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-desc{
+  font-size:1rem;color:rgba(255,255,255,.55);
+  line-height:1.8;font-weight:300;margin-bottom:3rem;max-width:480px;
+}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-primary{
+  background:var(--gold);color:var(--white);
+  padding:1rem 2.2rem;text-decoration:none;
+  font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid var(--gold);transition:all var(--transition);display:inline-block;
+}
+.btn-primary:hover{background:var(--gold2);border-color:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,146,74,.3)}
+.btn-secondary{
+  border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);
+  padding:1rem 2.2rem;text-decoration:none;
+  font-size:.78rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  transition:all var(--transition);display:inline-block;
+}
+.btn-secondary:hover{border-color:rgba(255,255,255,.6);color:white;transform:translateY(-2px)}
+
+/* HERO RIGHT */
+.hero-right{display:flex;flex-direction:column;gap:1rem}
+.hero-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.08)}
+.hero-stat{
+  background:rgba(11,28,44,.6);backdrop-filter:blur(10px);
+  padding:2rem 1.5rem;transition:background var(--transition);
+}
+.hero-stat:hover{background:rgba(184,146,74,.08)}
+.hero-stat-num{
+  font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:500;
+  color:var(--gold);display:block;line-height:1;margin-bottom:.4rem;
+}
+.hero-stat-label{font-size:.68rem;color:rgba(255,255,255,.45);letter-spacing:.15em;text-transform:uppercase}
+.hero-avail{
+  background:rgba(26,107,53,.12);border:1px solid rgba(26,107,53,.25);
+  padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between;
+}
+.hero-avail-left{font-size:.8rem;color:rgba(255,255,255,.6)}
+.hero-avail-left strong{display:block;font-size:1.1rem;color:white;font-weight:500}
+.hero-avail-badge{
+  background:rgba(26,107,53,.2);border:1px solid rgba(26,107,53,.4);
+  color:#4ade80;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.35rem .8rem;font-weight:600;
+}
+.hero-scroll{
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.8rem;z-index:1;
+  color:rgba(255,255,255,.3);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+}
+.hero-scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.3));animation:scrollAnim 2.5s ease-in-out infinite}
+@keyframes scrollAnim{0%,100%{opacity:.3;transform:scaleY(.3);transform-origin:top}50%{opacity:1;transform:scaleY(1);transform-origin:top}}
+
+/* ── METRICS BAR ── */
+.metrics{background:var(--navy);padding:0 4rem}
+.metrics-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-left:1px solid rgba(255,255,255,.06);
+}
+.metric{
+  padding:2.2rem 2rem;border-right:1px solid rgba(255,255,255,.06);
+  transition:background var(--transition);cursor:default;
+}
+.metric:hover{background:rgba(184,146,74,.06)}
+.metric-num{
+  font-family:'Playfair Display',serif;font-size:2rem;font-weight:500;
+  color:var(--gold);display:block;margin-bottom:.3rem;
+}
+.metric-label{font-size:.68rem;color:rgba(255,255,255,.38);letter-spacing:.15em;text-transform:uppercase}
+
+/* ── SECTIONS ── */
+section{padding:7rem 4rem}
+.container{max-width:1200px;margin:0 auto}
+.eyebrow{
+  font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1rem;font-weight:600;
+  display:flex;align-items:center;gap:.8rem;
+}
+.eyebrow::before{content:'';width:24px;height:1px;background:var(--gold)}
+.section-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,3.5vw,3rem);font-weight:400;
+  color:var(--navy);line-height:1.15;margin-bottom:1.2rem;
+}
+.section-title em{font-style:italic;color:var(--gold)}
+.section-desc{color:var(--slate);font-size:.95rem;line-height:1.85;max-width:500px;font-weight:300}
+
+/* ── PROYECTO ── */
+.proyecto{background:var(--stone)}
+.proyecto-inner{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
+.proyecto-features{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:2.5rem;background:var(--border)}
+.feat{
+  background:var(--stone);padding:1.8rem 1.5rem;
+  transition:background var(--transition);
+}
+.feat:hover{background:var(--white)}
+.feat-num{
+  font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--gold);
+  opacity:.4;display:block;margin-bottom:.8rem;line-height:1;
+}
+.feat h4{font-size:.85rem;font-weight:600;color:var(--navy);margin-bottom:.4rem;letter-spacing:.04em}
+.feat p{font-size:.82rem;color:var(--slate);line-height:1.65;font-weight:300}
+.proyecto-visual{position:relative}
+.proyecto-img-wrap{
+  width:100%;aspect-ratio:3/4;background:var(--stone2);overflow:hidden;
+  position:relative;
+}
+.proyecto-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.proyecto-img-wrap:hover img{transform:scale(1.03)}
+.proyecto-img-placeholder{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--stone2),var(--stone3));
+}
+.proyecto-badge{
+  position:absolute;bottom:-2rem;right:-2rem;
+  background:var(--navy);padding:2rem;
+  display:flex;flex-direction:column;gap:.2rem;
+}
+.proyecto-badge-num{font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--gold);font-weight:500;line-height:1}
+.proyecto-badge-txt{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+
+/* ── MAPA ── */
+.map-section{background:var(--white);padding-bottom:8rem}
+.map-header{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;margin-bottom:2.5rem}
+.map-controls{display:flex;flex-direction:column;gap:1rem;align-items:flex-end}
+.map-legend{display:flex;gap:1.5rem;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--muted);font-weight:500;letter-spacing:.05em}
+.legend-dot{width:8px;height:8px}
+.dot-dis{background:var(--dis)}.dot-res{background:var(--res)}.dot-ven{background:var(--ven)}
+.dot-road{background:#E8B84B;width:18px;height:6px;border-radius:2px}
+.map-filters{display:flex;gap:.5rem;flex-wrap:wrap}
+.filter-btn{
+  padding:.45rem 1.2rem;border:1px solid var(--border);background:white;
+  font-size:.7rem;cursor:pointer;font-family:'Jost',sans-serif;
+  transition:all var(--transition);color:var(--muted);
+  letter-spacing:.1em;text-transform:uppercase;font-weight:500;
+}
+.filter-btn.active{background:var(--navy);color:white;border-color:var(--navy)}
+.filter-btn:hover:not(.active){border-color:var(--gold);color:var(--gold)}
+.map-wrap{position:relative;border:1px solid var(--border)}
+#mapa{width:100%;height:600px}
+.geo-btn{
+  position:absolute;bottom:1.5rem;left:1.5rem;z-index:400;
+  background:white;border:1px solid var(--border);color:var(--navy);
+  padding:.6rem 1.2rem;font-size:.72rem;font-weight:600;cursor:pointer;
+  font-family:'Jost',sans-serif;letter-spacing:.1em;text-transform:uppercase;
+  display:flex;align-items:center;gap:.5rem;transition:all var(--transition);
+  box-shadow:var(--shadow-sm);
+}
+.geo-btn:hover{background:var(--navy);color:white;border-color:var(--navy)}
+.map-tip{
+  position:absolute;top:1.5rem;left:50%;transform:translateX(-50%);z-index:400;
+  background:rgba(11,28,44,.85);backdrop-filter:blur(8px);
+  color:rgba(255,255,255,.7);font-size:.7rem;letter-spacing:.08em;
+  padding:.5rem 1.2rem;border:1px solid rgba(255,255,255,.08);
+  white-space:nowrap;pointer-events:none;
+}
+.leaflet-popup-content-wrapper{
+  background:white!important;border:none!important;border-radius:0!important;
+  box-shadow:var(--shadow-lg)!important;color:var(--carbon)!important;
+}
+.leaflet-popup-tip{background:white!important}
+.leaflet-popup-content{margin:1.2rem 1.4rem!important}
+.pp h4{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:500;
+  color:var(--navy);margin-bottom:.8rem;padding-bottom:.7rem;border-bottom:1px solid var(--border)}
+.pp-row{display:flex;justify-content:space-between;font-size:.82rem;padding:.25rem 0}
+.pp-label{color:var(--muted)}.pp-val{font-weight:600;color:var(--navy)}
+.lote-hover-label{
+  background:white!important;border:none!important;border-radius:0!important;
+  box-shadow:var(--shadow-md)!important;color:var(--carbon)!important;
+  font-size:12px!important;font-family:'Jost',sans-serif!important;
+  padding:8px 14px!important;white-space:nowrap!important;
+  border-left:2px solid var(--gold)!important;
+}
+.lote-hover-label::before{display:none!important}
+.leaflet-control-zoom{border:none!important;box-shadow:var(--shadow-sm)!important}
+.leaflet-control-zoom a{
+  background:white!important;color:var(--navy)!important;
+  border:1px solid var(--border)!important;border-radius:0!important;
+  font-size:16px!important;width:32px!important;height:32px!important;
+  line-height:30px!important;
+}
+.leaflet-control-zoom a:hover{background:var(--navy)!important;color:white!important}
+.leaflet-div-icon{background:transparent!important;border:none!important}
+
+/* ── GALERÍA ── */
+.galeria{background:var(--stone);padding-bottom:8rem}
+.galeria-header{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;margin-bottom:3rem}
+.gallery-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:auto;gap:3px}
+.gallery-item{overflow:hidden;cursor:pointer;position:relative;background:var(--stone2)}
+.gi-1{grid-column:span 8;grid-row:span 2;aspect-ratio:unset;min-height:440px}
+.gi-2{grid-column:span 4;min-height:215px}
+.gi-3{grid-column:span 4;min-height:215px}
+.gi-4{grid-column:span 4;min-height:210px}
+.gi-5{grid-column:span 4;min-height:210px}
+.gi-6{grid-column:span 4;min-height:210px}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;display:block}
+.gallery-item:hover img{transform:scale(1.05)}
+.gallery-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(11,28,44,.7) 0%,transparent 50%);
+  opacity:0;transition:opacity var(--transition);
+  display:flex;align-items:flex-end;padding:1.5rem;
+}
+.gallery-item:hover .gallery-overlay{opacity:1}
+.gallery-overlay span{color:white;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500}
+.gallery-placeholder{
+  width:100%;height:100%;min-height:inherit;
+  background:linear-gradient(135deg,var(--stone2),var(--stone3));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;
+}
+.gallery-placeholder-icon{font-size:2.5rem;opacity:.2}
+.gallery-placeholder-txt{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+/* ── PRECIOS ── */
+.precios{background:var(--white)}
+.precios-header{text-align:center;max-width:600px;margin:0 auto 5rem}
+.precios-header .section-desc{margin:0 auto}
+.precio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.precio-card{
+  background:var(--white);padding:3rem 2.5rem;
+  transition:background var(--transition),transform var(--transition);
+  position:relative;overflow:hidden;
+}
+.precio-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:3px;background:var(--border);transition:background var(--transition);
+}
+.precio-card.featured::before{background:var(--gold)}
+.precio-card:hover{background:var(--stone);transform:translateY(-4px)}
+.precio-card:hover::before{background:var(--gold)}
+.precio-card .eyebrow{margin-bottom:.8rem}
+.precio-card h3{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:500;color:var(--navy);margin-bottom:1rem}
+.precio-rango{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:400;color:var(--navy);margin-bottom:.4rem}
+.precio-rango small{font-size:.9rem;color:var(--muted);font-family:'Jost',sans-serif;font-weight:300}
+.precio-nota{font-size:.82rem;color:var(--slate);line-height:1.7;margin-top:.8rem;font-weight:300}
+.precio-list{list-style:none;margin-top:2rem}
+.precio-list li{
+  padding:.6rem 0;border-bottom:1px solid var(--border);
+  font-size:.83rem;display:flex;align-items:center;gap:.8rem;color:var(--slate);
+}
+.precio-list li::before{content:'';width:16px;height:1px;background:var(--gold);flex-shrink:0}
+.precio-list li:last-child{border-bottom:none}
+
+/* ── UBICACIÓN ── */
+.ubicacion{background:var(--stone)}
+.ubicacion-inner{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start}
+.ubi-puntos{list-style:none;margin-top:2rem}
+.ubi-punto{
+  display:flex;gap:1.5rem;align-items:center;
+  padding:1rem 0;border-bottom:1px solid var(--border);
+}
+.ubi-punto:last-child{border-bottom:none}
+.ubi-dist{
+  font-family:'Playfair Display',serif;font-size:1.1rem;
+  color:var(--gold);font-weight:500;min-width:60px;
+}
+.ubi-name{font-size:.85rem;color:var(--slate)}
+#mapa-ubi{width:100%;height:380px;border:1px solid var(--border)}
+
+/* ── TRUST ── */
+.trust{background:var(--navy);padding:5rem 4rem}
+.trust-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.06)}
+.trust-item{
+  background:var(--navy);padding:3rem 2.5rem;text-align:center;
+  transition:background var(--transition);
+}
+.trust-item:hover{background:rgba(184,146,74,.06)}
+.trust-icon{font-size:2rem;margin-bottom:1rem;opacity:.6}
+.trust-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:white;font-weight:400;margin-bottom:.6rem}
+.trust-desc{font-size:.8rem;color:rgba(255,255,255,.38);line-height:1.7;font-weight:300}
+
+/* ── CONTACTO ── */
+.contacto{background:var(--stone)}
+.contacto-inner{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start}
+.contacto-info .section-title{color:var(--navy)}
+.contacto-info p{font-size:.9rem;color:var(--slate);line-height:1.85;font-weight:300;margin-bottom:2rem}
+.contacto-datos{display:flex;flex-direction:column;gap:.6rem}
+.ci{
+  display:flex;align-items:center;gap:1rem;color:var(--slate);
+  text-decoration:none;font-size:.85rem;padding:.9rem 1.2rem;
+  border:1px solid var(--border);background:white;
+  transition:all var(--transition);
+}
+.ci:hover{border-color:var(--gold);color:var(--navy);background:var(--white);transform:translateX(4px)}
+.ci-icon{
+  width:36px;height:36px;background:var(--stone);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;
+  transition:background var(--transition);
+}
+.ci:hover .ci-icon{background:var(--gold);border-color:var(--gold)}
+.form-contacto{background:white;padding:2.5rem;border:1px solid var(--border)}
+.form-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:500;color:var(--navy);margin-bottom:1.5rem}
+.form-group{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem}
+.form-group label{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.form-group input,.form-group textarea,.form-group select{
+  background:var(--stone);border:1px solid var(--border);
+  padding:.8rem 1rem;color:var(--navy);font-family:'Jost',sans-serif;
+  font-size:.88rem;transition:border-color var(--transition),background var(--transition);outline:none;
+}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{
+  border-color:var(--gold);background:var(--white);
+}
+.form-group select option{background:white}
+.form-group textarea{resize:vertical;min-height:90px}
+.btn-submit{
+  width:100%;background:var(--navy);color:white;border:none;
+  padding:1rem 2rem;font-family:'Jost',sans-serif;font-size:.75rem;
+  font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  cursor:pointer;transition:all var(--transition);margin-top:.5rem;
+}
+.btn-submit:hover{background:var(--gold)}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--navy);border-top:1px solid rgba(255,255,255,.06);
+  padding:3rem 4rem;
+  display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;
+}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.1rem;color:rgba(255,255,255,.5);font-weight:400}
+.footer-logo span{color:var(--gold);font-style:italic}
+.footer-copy{font-size:.72rem;color:rgba(255,255,255,.25);letter-spacing:.06em}
+.footer-links{display:flex;gap:2rem}
+.footer-links a{font-size:.7rem;color:rgba(255,255,255,.3);text-decoration:none;letter-spacing:.08em;transition:color var(--transition)}
+.footer-links a:hover{color:var(--gold)}
+
+/* ── PANEL LATERAL ── */
+.side-panel{
+  position:fixed;top:0;right:-500px;width:460px;height:100vh;
+  background:var(--white);z-index:2000;
+  transition:right .45s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:-32px 0 80px rgba(0,0,0,.15);
+}
+.side-panel.open{right:0}
+.sp-header{
+  padding:2.5rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;
+  flex-shrink:0;background:var(--navy);
+}
+.sp-lote-eyebrow{font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.sp-lote-title{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:400;color:white;line-height:1}
+.sp-close{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.5);width:38px;height:38px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1rem;transition:all var(--transition);flex-shrink:0;
+}
+.sp-close:hover{background:rgba(255,255,255,.18);color:white}
+.sp-body{flex:1;overflow-y:auto;padding:2rem}
+.sp-estado{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:1.5rem;padding:.35rem 1rem;border:1px solid;
+}
+.sp-dis{background:#F0FBF4;color:var(--dis);border-color:#B8DDBE}
+.sp-dis::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--dis);animation:pulse 2s infinite}
+.sp-res{background:#FEF9EC;color:var(--res);border-color:#E8D090}
+.sp-ven{background:#FEF0F0;color:var(--ven);border-color:#E8BABA}
+.sp-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin-bottom:1.5rem}
+.sp-stat{background:var(--stone);padding:1.2rem}
+.sp-stat-label{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.sp-stat-value{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:400;color:var(--navy)}
+.sp-stat-value small{font-size:.75rem;color:var(--muted);font-family:'Jost',sans-serif;font-weight:300}
+.sp-divider{height:1px;background:var(--border);margin:1.2rem 0}
+.sp-info-row{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid rgba(0,0,0,.04);font-size:.82rem}
+.sp-info-row:last-child{border-bottom:none}
+.sp-info-label{color:var(--muted)}
+.sp-info-value{color:var(--navy);font-weight:500}
+.sp-footer{padding:1.5rem 2rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:.8rem;flex-shrink:0}
+.sp-wa{
+  display:flex;align-items:center;justify-content:center;gap:.7rem;
+  background:#075E54;color:white;padding:1rem;text-decoration:none;
+  font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  font-family:'Jost',sans-serif;transition:background var(--transition);
+}
+.sp-wa:hover{background:#128C7E}
+.sp-form-btn{
+  display:flex;align-items:center;justify-content:center;
+  background:white;border:1px solid var(--border);color:var(--slate);
+  padding:.85rem;font-size:.72rem;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;cursor:pointer;font-family:'Jost',sans-serif;
+  transition:all var(--transition);
+}
+.sp-form-btn:hover{background:var(--navy);color:white;border-color:var(--navy)}
+.sp-overlay{
+  position:fixed;inset:0;background:rgba(11,28,44,0);z-index:1999;
+  pointer-events:none;transition:background .45s ease;
+}
+.sp-overlay.active{background:rgba(11,28,44,.45);pointer-events:all;backdrop-filter:blur(2px)}
+
+/* ── LIGHTBOX ── */
+.lightbox{display:none;position:fixed;inset:0;z-index:9999;background:rgba(11,28,44,.97);align-items:center;justify-content:center}
+.lightbox.open{display:flex}
+.lightbox img{max-width:88vw;max-height:84vh;object-fit:contain}
+.lb-close{position:absolute;top:2rem;right:2rem;color:rgba(255,255,255,.5);font-size:1.3rem;cursor:pointer;background:rgba(255,255,255,.08);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all var(--transition)}
+.lb-close:hover{background:rgba(255,255,255,.18);color:white}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);color:white;border:none;font-size:1.2rem;cursor:pointer;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all var(--transition)}
+.lb-nav:hover{background:rgba(255,255,255,.18)}
+.lb-prev{left:2rem}.lb-next{right:2rem}
+
+/* ── MAP TABS ── */
+.map-tab-bar{display:flex;gap:4px;margin-bottom:1.2rem}
+.map-tab{padding:.5rem 1.4rem;font-size:.72rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;cursor:pointer;border:1px solid var(--border);
+  background:white;color:var(--muted);transition:all .25s;font-family:'Jost',sans-serif}
+.map-tab.active{background:var(--navy);color:white;border-color:var(--navy)}
+.map-tab:hover:not(.active){border-color:var(--gold);color:var(--gold)}
+.map-pane{display:none}.map-pane.active{display:block}
+
+
+
+/* ── MAPA 3D INLINE ── */
+#canvas3d{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
+#wrap3d{position:relative;width:100%;height:600px;background:#050C18;overflow:hidden;border:1px solid var(--border)}
+.ui3d{position:absolute;top:0;left:0;right:0;z-index:10;padding:.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(5,12,24,.97) 60%,transparent);pointer-events:none}
+.logo3d{font-size:.82rem;color:rgba(255,255,255,.38);letter-spacing:.06em}.logo3d em{color:#B8924A;font-style:italic;font-weight:600}
+.stats3d{position:absolute;top:3.2rem;left:1.5rem;z-index:10;display:flex;flex-direction:column;gap:.25rem}
+.si3d{font-size:.58rem;color:rgba(255,255,255,.28);letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:.42rem}
+.sd3d{width:7px;height:7px;border-radius:1px;flex-shrink:0}
+.sn3d{color:rgba(255,255,255,.5);font-weight:600;margin-left:1px}
+.leg3d{position:absolute;bottom:1.2rem;left:1.5rem;z-index:10;display:flex;flex-direction:column;gap:.25rem}
+.li3d{font-size:.6rem;color:rgba(255,255,255,.28);letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:.42rem}
+.ld3d{width:8px;height:8px;border-radius:2px}
+.hint3d{position:absolute;bottom:1.2rem;left:50%;transform:translateX(-50%);z-index:10;font-size:.58rem;color:rgba(255,255,255,.14);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;pointer-events:none;transition:opacity 2s}
+.tt3d{position:absolute;z-index:20;background:rgba(4,10,20,.96);border:1px solid rgba(184,146,74,.2);border-left:2px solid #B8924A;padding:.44rem .88rem;font-size:.7rem;color:white;white-space:nowrap;opacity:0;transition:opacity .1s;pointer-events:none}
+.tt3d.on{opacity:1}
+.tt3d b{display:block;font-weight:600;font-size:.72rem;margin-bottom:1px}
+.tt3d span{color:rgba(255,255,255,.35);font-size:.62rem}
+.panel3d{position:absolute;top:0;right:-420px;width:360px;height:100%;background:rgba(4,9,18,.97);border-left:1px solid rgba(184,146,74,.1);z-index:30;display:flex;flex-direction:column;transition:right .38s cubic-bezier(.4,0,.2,1)}
+.panel3d.on{right:0}
+
+/* ── PANEL 3D ── */
+.p3-header{padding:1.7rem 1.8rem 1.3rem;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;position:relative;background:linear-gradient(135deg,rgba(184,146,74,.07),transparent)}
+.p3-ey{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:#B8924A;margin-bottom:.3rem;font-weight:700;font-family:'Jost',sans-serif}
+.p3-title{font-size:1.85rem;color:white;font-weight:300;line-height:1;font-family:'Jost',sans-serif}
+.p3-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.35);width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.95rem;transition:all .2s}
+.p3-close:hover{background:rgba(255,255,255,.12);color:white}
+.p3-body{flex:1;overflow-y:auto;padding:1.4rem 1.8rem}
+.p3-estado{display:inline-flex;align-items:center;gap:.4rem;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:1.3rem;padding:.28rem .8rem;border:1px solid;font-family:'Jost',sans-serif}
+.p3-dis{background:rgba(34,197,94,.08);color:#22c55e;border-color:rgba(34,197,94,.2)}
+.p3-dis::before{content:'';width:5px;height:5px;border-radius:50%;background:#22c55e;animation:bl3 2s infinite}
+@keyframes bl3{0%,100%{opacity:1}50%{opacity:.2}}
+.p3-res{background:rgba(245,158,11,.08);color:#f59e0b;border-color:rgba(245,158,11,.2)}
+.p3-ven{background:rgba(239,68,68,.08);color:#ef4444;border-color:rgba(239,68,68,.2)}
+.p3-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.05);margin-bottom:1.3rem}
+.p3-stat{background:#040912;padding:1rem}
+.p3-slabel{font-size:.55rem;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.22);margin-bottom:.3rem;font-family:'Jost',sans-serif}
+.p3-sval{font-size:1.1rem;color:white;font-weight:300;font-family:'Jost',sans-serif}
+.p3-info{border-top:1px solid rgba(255,255,255,.05);padding-top:.9rem}
+.p3-row{display:flex;justify-content:space-between;padding:.46rem 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:.78rem;font-family:'Jost',sans-serif}
+.p3-row:last-child{border-bottom:none}
+.p3-rl{color:rgba(255,255,255,.25)}.p3-rv{color:white;font-weight:500}
+.p3-footer{padding:1rem 1.8rem;border-top:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;gap:.55rem;flex-shrink:0}
+.p3-wa{display:flex;align-items:center;justify-content:center;gap:.55rem;background:#075E54;color:white;padding:.82rem;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;transition:background .2s;border:none;width:100%;cursor:pointer;font-family:'Jost',sans-serif}
+.p3-wa:hover{background:#128C7E}
+.p3-cerrar{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.3);padding:.62rem;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:'Jost',sans-serif;width:100%;transition:all .2s}
+.p3-cerrar:hover{background:rgba(255,255,255,.09);color:white}
+
+/* ── IVA CALLOUT ── */
+.iva-callout{
+  background:linear-gradient(135deg,var(--navy) 0%,#0d2238 100%);
+  padding:3rem 4rem;border-top:1px solid rgba(184,146,74,.15);
+  border-bottom:1px solid rgba(184,146,74,.15);
+}
+.iva-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center;
+}
+.iva-badge{
+  display:inline-flex;align-items:center;gap:.8rem;
+  background:rgba(184,146,74,.12);border:1px solid rgba(184,146,74,.3);
+  padding:.5rem 1.2rem;margin-bottom:1rem;
+}
+.iva-badge-text{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.iva-headline{
+  font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.4rem);
+  font-weight:400;color:white;line-height:1.2;margin-bottom:.8rem;
+}
+.iva-headline em{font-style:italic;color:var(--gold)}
+.iva-desc{font-size:.9rem;color:rgba(255,255,255,.45);line-height:1.7;font-weight:300;max-width:500px}
+.iva-number{text-align:center;padding:2rem 3rem;border:1px solid rgba(184,146,74,.2);background:rgba(184,146,74,.05)}
+.iva-pct{font-family:'Playfair Display',serif;font-size:5rem;font-weight:400;color:var(--gold);line-height:1;display:block}
+.iva-pct-label{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:.4rem;display:block}
+.iva-ahorro{font-size:.82rem;color:rgba(255,255,255,.5);margin-top:.6rem;font-weight:300}
+.iva-ahorro strong{color:var(--gold);font-weight:600}
+
+/* ── COMPARADOR ── */
+.comparador-section{background:var(--stone);padding:6rem 4rem}
+.comp-header{text-align:center;max-width:600px;margin:0 auto 3rem}
+.comp-wrap{max-width:1200px;margin:0 auto}
+.comp-selector{display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;align-items:start;margin-bottom:2rem}
+.comp-picker{background:white;border:1px solid var(--border);padding:1.5rem}
+.comp-picker-title{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;font-weight:600}
+.comp-picker select{
+  width:100%;padding:.75rem 1rem;border:1px solid var(--border);
+  background:var(--stone);font-family:'Jost',sans-serif;font-size:.88rem;
+  color:var(--navy);outline:none;cursor:pointer;transition:border-color .2s;
+}
+.comp-picker select:focus{border-color:var(--gold)}
+.comp-vs{display:flex;align-items:center;justify-content:center;padding-top:3.5rem}
+.comp-vs-circle{
+  width:48px;height:48px;border-radius:50%;background:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);font-style:italic;
+}
+.comp-result{display:none;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.comp-result.visible{display:grid}
+.comp-col{background:white;padding:2rem}
+.comp-col-header{
+  border-bottom:2px solid var(--gold);padding-bottom:1rem;margin-bottom:1.5rem;
+}
+.comp-lote-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:400;color:var(--navy)}
+.comp-lote-estado{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;margin-top:.3rem;font-weight:600}
+.comp-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.comp-row:last-child{border-bottom:none}
+.comp-row-label{color:var(--muted)}
+.comp-row-value{font-weight:600;color:var(--navy)}
+.comp-row-value.highlight{color:var(--gold)}
+.comp-row-value.better{color:#1A6B35}
+.comp-btn-wa{
+  margin-top:1.5rem;width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;
+  background:#075E54;color:white;padding:.85rem;font-size:.72rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;
+  font-family:'Jost',sans-serif;transition:background .2s;text-decoration:none;
+}
+.comp-btn-wa:hover{background:#128C7E}
+.comp-empty{
+  grid-column:1/-1;background:white;padding:3rem;text-align:center;
+  color:var(--muted);font-size:.9rem;font-weight:300;
+}
+
+/* ── CALCULADORA ── */
+.calculadora{background:var(--navy);padding:6rem 4rem}
+.calc-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.calc-left .eyebrow{color:var(--gold)}
+.calc-left .section-title{color:white}
+.calc-left .section-title em{color:var(--gold)}
+.calc-left .section-desc{color:rgba(255,255,255,.45)}
+.calc-form{margin-top:2rem;display:flex;flex-direction:column;gap:1.2rem}
+.calc-label{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.5rem;display:block;font-weight:600}
+.calc-range-wrap{display:flex;align-items:center;gap:1rem}
+.calc-range{flex:1;-webkit-appearance:none;height:3px;background:rgba(255,255,255,.12);outline:none;border-radius:2px}
+.calc-range::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--navy)}
+.calc-range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--navy)}
+.calc-val{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);min-width:60px;text-align:right;font-weight:500}
+.calc-result{background:rgba(255,255,255,.04);border:1px solid rgba(184,146,74,.2);padding:2rem}
+.calc-result-title{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:1.5rem;font-weight:600}
+.calc-result-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.88rem}
+.calc-result-row:last-child{border-bottom:none}
+.calc-result-label{color:rgba(255,255,255,.4)}
+.calc-result-value{color:white;font-weight:600;font-family:'Playfair Display',serif;font-size:1.05rem}
+.calc-result-value.gold{color:var(--gold)}
+.calc-result-value.green{color:#4ade80}
+.calc-cta{margin-top:1.5rem;width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;background:var(--gold);color:var(--navy);padding:.9rem;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;font-family:'Jost',sans-serif;transition:all .3s;text-decoration:none}
+.calc-cta:hover{background:var(--gold2)}
+
+/* ── QUE PUEDO HACER ── */
+.usos{background:var(--stone);padding:6rem 4rem}
+.usos-header{text-align:center;max-width:600px;margin:0 auto 4rem}
+.usos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);max-width:1200px;margin:0 auto}
+.uso-card{background:var(--white);padding:2.5rem 2rem;text-align:center;transition:all .3s;cursor:default;position:relative;overflow:hidden}
+.uso-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--border);transition:background .3s}
+.uso-card:hover{background:var(--navy);transform:translateY(-4px)}
+.uso-card:hover::before{background:var(--gold)}
+.uso-icon{font-size:2.5rem;margin-bottom:1.2rem;display:block;transition:transform .3s}
+.uso-card:hover .uso-icon{transform:scale(1.1)}
+.uso-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:500;color:var(--navy);margin-bottom:.6rem;transition:color .3s}
+.uso-card:hover .uso-title{color:var(--gold)}
+.uso-desc{font-size:.8rem;color:var(--muted);line-height:1.65;font-weight:300;transition:color .3s}
+.uso-card:hover .uso-desc{color:rgba(255,255,255,.5)}
+.uso-permitido{display:inline-flex;align-items:center;gap:.3rem;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#1A6B35;font-weight:600;margin-top:.8rem;background:#EEF7F0;padding:.25rem .7rem}
+.uso-card:hover .uso-permitido{background:rgba(74,222,128,.1);color:#4ade80}
+
+/* ── WHATSAPP FLOTANTE ── */
+.wa-float{
+  position:fixed;bottom:2rem;right:2rem;z-index:800;
+  width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(135deg,#25d366,#128c7e);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(37,211,102,.4);
+  text-decoration:none;transition:all .3s;
+  animation:waPulse 3s infinite;
+}
+.wa-float:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(37,211,102,.6)}
+.wa-float svg{width:28px;height:28px}
+@keyframes waPulse{
+  0%,100%{box-shadow:0 4px 20px rgba(37,211,102,.4)}
+  50%{box-shadow:0 4px 32px rgba(37,211,102,.7),0 0 0 8px rgba(37,211,102,.1)}
+}
+.wa-float-label{
+  position:absolute;right:70px;
+  background:var(--navy);color:white;
+  font-size:.72rem;font-weight:600;letter-spacing:.06em;
+  padding:.4rem .9rem;white-space:nowrap;
+  opacity:0;transform:translateX(8px);
+  transition:all .25s;pointer-events:none;
+}
+.wa-float:hover .wa-float-label{opacity:1;transform:translateX(0)}
+
+/* ── MOBILE ── */
+@media(max-width:1024px){
+  nav{padding:0 2rem}
+  section{padding:5rem 2rem}
+  .hero-content{grid-template-columns:1fr;gap:3rem;padding:0 2rem;padding-top:76px}
+  .hero h1{font-size:clamp(2.5rem,6vw,3.5rem)}
+  .hero-stats-grid{grid-template-columns:repeat(4,1fr)}
+  .metrics{padding:0 2rem}
+  .metrics-inner{grid-template-columns:repeat(2,1fr)}
+  .trust{padding:4rem 2rem}
+  .trust-inner{grid-template-columns:1fr}
+  footer{padding:2rem;grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  nav{padding:0 1.5rem}
+  .nav-links{display:none}
+  .ham{display:flex}
+  .proyecto-inner,.ubicacion-inner,.contacto-inner,.precio-grid{grid-template-columns:1fr}
+  .proyecto-badge{right:0;bottom:-1rem}
+  .galeria-header{grid-template-columns:1fr}
+  .gallery-grid{grid-template-columns:1fr 1fr}
+  .gi-1{grid-column:span 2;min-height:260px}
+  .gi-2,.gi-3,.gi-4,.gi-5,.gi-6{grid-column:span 1;min-height:180px}
+  .hero-stats-grid{grid-template-columns:1fr 1fr}
+  .map-header{grid-template-columns:1fr}
+  .map-controls{align-items:flex-start}
+  .metrics-inner{grid-template-columns:1fr 1fr}
+  .side-panel{width:100%;right:-100%}
+  .trust-inner{grid-template-columns:1fr}
+  footer{padding:2rem 1.5rem;text-align:center}
+  .footer-links{justify-content:center;flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <a href="#" class="nav-logo"><div class="nav-logo-dot"></div>Altos de Peñafiel</a>
+  <ul class="nav-links">
+    <li><a href="#proyecto">El Proyecto</a></li>
+    <li><a href="#mapa-parcelas">Parcelas</a></li>
+    <li><a href="#galeria">Galería</a></li>
+    <li><a href="#usos">¿Qué puedo hacer?</a></li>
+    <li><a href="#precios">Precios</a></li>
+    <li><a href="#comparador">Comparar</a></li>
+    <li><a href="#contacto" class="nav-cta">Contactar</a></li>
+  </ul>
+  <button class="ham" onclick="toggleNav()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        <span>Nueva Imperial · Región de la Araucanía</span>
+      </div>
+      <h1><em>Invierte</em> en<br>tierra firme</h1>
+      <p class="hero-desc">Tu refugio natural en 77 hectáreas. 150 parcelas rústicas diseñadas para quienes buscan desconexión, plusvalía y un retorno a lo esencial.</p>
+      <div class="hero-actions">
+        <a href="#mapa-parcelas" class="btn-primary">Ver parcelas disponibles</a>
+        <a href="#contacto" class="btn-secondary">Solicitar información</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stats-grid">
+        <div class="hero-stat"><span class="hero-stat-num">50</span><span class="hero-stat-label">Parcelas</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">5.000</span><span class="hero-stat-label">M² promedio</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">9 km</span><span class="hero-stat-label">A Imperial</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">$25M</span><span class="hero-stat-label">Desde</span></div>
+      </div>
+      <div class="hero-avail">
+        <div class="hero-avail-left">
+          <strong id="heroAvailNum">50 parcelas disponibles</strong>
+          de 50 en total
+        </div>
+        <div class="hero-avail-badge">En venta</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Descubrir</span><div class="hero-scroll-line"></div></div>
+</section>
+
+<!-- ── METRICS ── -->
+<div style="background:linear-gradient(90deg,#0B1C2C 0%,#122336 50%,#0B1C2C 100%);padding:1.5rem 4rem;text-align:center;border-top:1px solid rgba(184,146,74,.2);border-bottom:1px solid rgba(184,146,74,.2)">
+  <p style="font-family:Playfair Display,serif;font-size:1.15rem;font-weight:400;color:rgba(255,255,255,.5);letter-spacing:.12em;font-style:italic">
+    &ldquo;<span style="color:#B8924A">Invierte en tierra firme</span>&rdquo;
+  </p>
+</div>
+<div class="metrics">
+  <div class="metrics-inner">
+    <div class="metric"><span class="metric-num">77 há</span><span class="metric-label">Extensión total del proyecto</span></div>
+    <div class="metric"><span class="metric-num">150</span><span class="metric-label">Parcelas rústicas con rol propio</span></div>
+    <div class="metric"><span class="metric-num">0% IVA</span><span class="metric-label">Exento bajo condición rústica</span></div>
+    <div class="metric"><span class="metric-num">$25–35M</span><span class="metric-label">Rango de precios CLP</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ── PROYECTO ── -->
+<section class="proyecto" id="proyecto">
+  <div class="container">
+    <div class="proyecto-inner">
+      <div class="reveal-left">
+        <div class="eyebrow">El proyecto</div>
+        <h2 class="section-title">Tierra auténtica<br>en el <em>corazón</em><br>de la Araucanía</h2>
+        <p class="section-desc">Altos de Peñafiel es un proyecto de parcelación ubicado a 9 km del camino Imperial–Carahue. Terreno rústico de topografía suave, ideal para construir, cultivar o simplemente invertir en el futuro.</p>
+        <div class="proyecto-features">
+          <div class="feat"><span class="feat-num">01</span><h4>Terreno suave</h4><p>Sin pendientes pronunciadas. Ideal para construir, cultivar o disfrutar sin complicaciones.</p></div>
+          <div class="feat"><span class="feat-num">02</span><h4>Ubicación</h4><p>9 km del camino Imperial–Carahue. Conectado y tranquilo a la vez.</p></div>
+          <div class="feat"><span class="feat-num">03</span><h4>Proyecto lotificado</h4><p>150 parcelas con planos y deslindes definidos. Todo en regla.</p></div>
+          <div class="feat"><span class="feat-num">04</span><h4>Escrituración al día</h4><p>Documentación en regla y proceso de compra transparente de principio a fin.</p></div>
+        </div>
+      </div>
+      <div class="proyecto-visual reveal-right">
+        <div class="proyecto-img-wrap">
+          <div class="proyecto-img-placeholder"><span style="font-size:5rem;opacity:.12">🌄</span></div>
+        </div>
+        <div class="proyecto-badge">
+          <span class="proyecto-badge-num">2025</span>
+          <span class="proyecto-badge-txt">Proyecto activo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MAPA ── -->
+<section class="map-section" id="mapa-parcelas">
+  <div class="container">
+    <div class="map-header reveal">
+      <div>
+        <div class="eyebrow">Plano interactivo</div>
+        <h2 class="section-title">Selecciona<br>tu <em>parcela</em></h2>
+        <p class="section-desc">Haz clic sobre cualquier lote para ver su información completa y contactar directamente por WhatsApp.</p>
+      </div>
+      <div class="map-controls">
+        <div class="map-legend">
+          <div class="legend-item"><div class="legend-dot dot-dis"></div>Disponible</div>
+          <div class="legend-item"><div class="legend-dot dot-res"></div>Reservada</div>
+          <div class="legend-item"><div class="legend-dot dot-ven"></div>Vendida</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#E8B84B;border-radius:2px"></div>Camino público</div>
+        </div>
+        <div class="map-filters">
+          <button class="filter-btn active" onclick="filtrarMapa('todos',this)">Todos</button>
+          <button class="filter-btn" onclick="filtrarMapa('disponible',this)">Disponibles</button>
+          <button class="filter-btn" onclick="filtrarMapa('reservado',this)">Reservadas</button>
+          <button class="filter-btn" onclick="filtrarMapa('vendido',this)">Vendidas</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="map-tab-bar">
+      <button class="map-tab active" onclick="switchMapTab('satelital',this)">🛰 Mapa Satelital</button>
+      <button class="map-tab" onclick="switchMapTab('3d',this)">◆ Mapa 1 — Vista 3D</button>
+    </div>
+
+    <!-- MAPA SATELITAL -->
+    <div class="map-pane active" id="pane-satelital">
+      <div class="map-wrap">
+        <div id="mapa"></div>
+        <div class="map-tip">Haz clic en una parcela para ver su información</div>
+        <button class="geo-btn" onclick="ubicarme()">📡 Mi ubicación</button>
+      </div>
+    </div>
+
+    <!-- MAPA 1 — VISTA 3D -->
+    <div class="map-pane" id="pane-3d">
+      <div id="wrap3d">
+        <canvas id="canvas3d"></canvas>
+        <div class="ui3d">
+          <div class="logo3d">Altos de <em>Peñafiel</em></div>
+        </div>
+        <div class="stats3d">
+          <div class="si3d"><div class="sd3d" style="background:#22c55e"></div>Disponibles<span class="sn3d" id="nd3">50</span></div>
+          <div class="si3d"><div class="sd3d" style="background:#f59e0b"></div>Reservadas<span class="sn3d" id="nr3">0</span></div>
+          <div class="si3d"><div class="sd3d" style="background:#ef4444"></div>Vendidas<span class="sn3d" id="nv3">0</span></div>
+        </div>
+        <div class="leg3d">
+          <div class="li3d"><div class="ld3d" style="background:#22c55e"></div>Disponible</div>
+          <div class="li3d"><div class="ld3d" style="background:#f59e0b"></div>Reservada</div>
+          <div class="li3d"><div class="ld3d" style="background:#ef4444"></div>Vendida</div>
+          <div class="li3d"><div class="ld3d" style="background:#E8B84B;border-radius:2px"></div>Camino público</div>
+        </div>
+        <div class="hint3d" id="hint3d">Arrastra para rotar · Scroll para zoom · Clic en un lote</div>
+        <div class="tt3d" id="tt3d"><b id="ttt3d"></b><span id="tts3d"></span></div>
+        <div class="panel3d" id="panel3d">
+          <div class="p3-header">
+            <div class="p3-ey" id="pey3d">ALTOS DE PEÑAFIEL</div>
+            <div class="p3-title" id="pt3d">Lote —</div>
+            <div class="p3-close" onclick="closeP3d()">×</div>
+          </div>
+          <div class="p3-body">
+            <div class="p3-estado p3-dis" id="pe3d">Disponible</div>
+            <div class="p3-stats">
+              <div class="p3-stat"><div class="p3-slabel">Superficie</div><div class="p3-sval" id="psup3d">—</div></div>
+              <div class="p3-stat"><div class="p3-slabel">Precio</div><div class="p3-sval" id="ppr3d">Consultar</div></div>
+            </div>
+            <div class="p3-info">
+              <div class="p3-row"><span class="p3-rl">Proyecto</span><span class="p3-rv">Altos de Peñafiel</span></div>
+              <div class="p3-row"><span class="p3-rl">Ubicación</span><span class="p3-rv">Nueva Imperial, Araucanía</span></div>
+              <div class="p3-row"><span class="p3-rl">Tipo</span><span class="p3-rv">Predio rústico</span></div>
+              <div class="p3-row"><span class="p3-rl">Acceso vehicular</span><span class="p3-rv">✓ Incluido</span></div>
+              <div class="p3-row"><span class="p3-rl">Exento de IVA</span><span class="p3-rv">✓ Predio rústico</span></div>
+              <div class="p3-row"><span class="p3-rl">Rol propio</span><span class="p3-rv">✓ Garantizado</span></div>
+            </div>
+          </div>
+          <div class="p3-footer">
+            <a id="pwa3d" href="#" class="p3-wa" target="_blank">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Consultar por WhatsApp
+            </a>
+            <button class="p3-cerrar" onclick="closeP3d()">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GALERÍA ── -->
+<section class="galeria" id="galeria">
+  <div class="container">
+    <div class="galeria-header reveal">
+      <div>
+        <div class="eyebrow">Galería fotográfica</div>
+        <h2 class="section-title">Conoce el <em>terreno</em></h2>
+      </div>
+      <p class="section-desc">Imágenes reales del predio Altos de Peñafiel y sus alrededores en la Araucanía.</p>
+    </div>
+    <div class="gallery-grid reveal" id="galleryGrid"></div>
+  </div>
+</section>
+
+<!-- ── TRUST ── -->
+<div class="trust">
+  <div class="trust-inner">
+    <div class="trust-item reveal">
+      <div class="trust-icon">📋</div>
+      <div class="trust-title">Subdivisión autorizada</div>
+      <div class="trust-desc">Proyecto con aprobación oficial. Cada parcela tiene rol propio independiente, garantizando plena autonomía legal desde el día de la compra.</div>
+    </div>
+    <div class="trust-item reveal">
+      <div class="trust-icon">💰</div>
+      <div class="trust-title">Exento de IVA</div>
+      <div class="trust-desc">Al ser predios rústicos bajo condición legal vigente, la compra está exenta de IVA. Tu presupuesto se maximiza completamente.</div>
+    </div>
+    <div class="trust-item reveal">
+      <div class="trust-icon">📈</div>
+      <div class="trust-title">Zona de alta demanda</div>
+      <div class="trust-desc">La Araucanía es una de las regiones con mayor crecimiento inmobiliario rural de Chile. Invertir hoy es asegurar plusvalía real a mediano plazo.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PRECIOS ── -->
+<!-- ── USOS ── -->
+<section class="usos" id="usos">
+  <div class="usos-header reveal">
+    <div class="eyebrow">Tu parcela, tus posibilidades</div>
+    <h2 class="section-title">¿Qué puedo hacer<br>con mi <em>parcela</em>?</h2>
+    <p class="section-desc" style="margin:0 auto">Al ser un predio rústico, tienes múltiples opciones. Esto es lo que puedes hacer desde el primer día.</p>
+  </div>
+  <div class="usos-grid reveal">
+    <div class="uso-card">
+      <span class="uso-icon">🏡</span>
+      <div class="uso-title">Construir tu casa</div>
+      <p class="uso-desc">Levanta la casa de campo que siempre imaginaste. Terreno suave, ideal para construir sin complicaciones.</p>
+      <div class="uso-permitido">✓ Permitido</div>
+    </div>
+    <div class="uso-card">
+      <span class="uso-icon">🌱</span>
+      <div class="uso-title">Huerta y cultivo</div>
+      <p class="uso-desc">Cultiva tus propios alimentos, planta árboles frutales o desarrolla un proyecto agrícola en suelo fértil.</p>
+      <div class="uso-permitido">✓ Permitido</div>
+    </div>
+    <div class="uso-card">
+      <span class="uso-icon">🏕️</span>
+      <div class="uso-title">Cabaña y arriendo</div>
+      <p class="uso-desc">Construye una cabaña y arriéndala. La Araucanía tiene alta demanda turística todo el año.</p>
+      <div class="uso-permitido">✓ Permitido</div>
+    </div>
+    <div class="uso-card">
+      <span class="uso-icon">🌲</span>
+      <div class="uso-title">Retiro y descanso</div>
+      <p class="uso-desc">Simplemente ten tu espacio propio en la naturaleza. Sin vecinos encima, sin ruido, sin apuro.</p>
+      <div class="uso-permitido">✓ Permitido</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── IVA CALLOUT ── -->
+<div class="iva-callout">
+  <div class="iva-inner reveal">
+    <div>
+      <div class="iva-badge"><span class="iva-badge-text">Ventaja fiscal confirmada</span></div>
+      <h2 class="iva-headline">Tu inversión <em>no paga IVA</em><br>por ser predio rústico</h2>
+      <p class="iva-desc">Al tratarse de predios rústicos bajo la normativa vigente, la compra está legalmente exenta de IVA. Eso significa que cada peso de tu presupuesto se destina 100% a la parcela — sin impuesto adicional.</p>
+      <p class="iva-ahorro" style="margin-top:1rem">En una parcela de $30 MM, el ahorro frente a una propiedad urbana es de aprox. <strong>$5.7 millones</strong></p>
+    </div>
+    <div class="iva-number reveal">
+      <span class="iva-pct">0%</span>
+      <span class="iva-pct-label">IVA aplicado</span>
+      <p class="iva-ahorro">Predio rústico · Norma vigente</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── CALCULADORA ── -->
+<section class="calculadora" id="calculadora">
+  <div class="calc-inner">
+    <div class="calc-left reveal-left">
+      <div class="eyebrow">Calculadora de inversión</div>
+      <h2 class="section-title">¿Cuánto necesitas<br>para tu <em>parcela</em>?</h2>
+      <p class="section-desc">Ajusta el presupuesto y el tamaño para ver qué parcela se ajusta a ti y cuánto ahorras al no pagar IVA.</p>
+      <div class="calc-form">
+        <div>
+          <label class="calc-label">Tu presupuesto disponible</label>
+          <div class="calc-range-wrap">
+            <input type="range" class="calc-range" id="calc-presupuesto" min="20" max="50" value="30" step="1" oninput="calcular()">
+            <span class="calc-val" id="calc-presupuesto-val">$30 MM</span>
+          </div>
+        </div>
+        <div>
+          <label class="calc-label">Superficie que buscas</label>
+          <div class="calc-range-wrap">
+            <input type="range" class="calc-range" id="calc-sup" min="5000" max="6500" value="5500" step="100" oninput="calcular()">
+            <span class="calc-val" id="calc-sup-val">5.500 m²</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal-right">
+      <div class="calc-result">
+        <div class="calc-result-title">Tu resumen de inversión</div>
+        <div class="calc-result-row">
+          <span class="calc-result-label">Precio estimado de parcela</span>
+          <span class="calc-result-value gold" id="cr-precio">$30 MM</span>
+        </div>
+        <div class="calc-result-row">
+          <span class="calc-result-label">IVA a pagar (predio rústico)</span>
+          <span class="calc-result-value green" id="cr-iva">$0 — Exento</span>
+        </div>
+        <div class="calc-result-row">
+          <span class="calc-result-label">Equivalente en propiedad urbana</span>
+          <span class="calc-result-value" id="cr-urbano">Pagarías ~$35.7 MM</span>
+        </div>
+        <div class="calc-result-row">
+          <span class="calc-result-label">Tu ahorro real</span>
+          <span class="calc-result-value green" id="cr-ahorro">~$5.7 MM</span>
+        </div>
+        <div class="calc-result-row">
+          <span class="calc-result-label">¿Tu presupuesto alcanza?</span>
+          <span class="calc-result-value" id="cr-alcanza">✓ Sí alcanza</span>
+        </div>
+        <a href="#contacto" class="calc-cta" id="cr-cta">Consultar esta parcela →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="precios" id="precios">
+  <div class="container">
+    <div class="precios-header reveal">
+      <div class="eyebrow">Inversión</div>
+      <h2 class="section-title">Valores de <em>parcelas</em></h2>
+      <p class="section-desc">Cada parcela tiene un precio específico según su superficie y ubicación dentro del predio. Consúltanos para conocer el valor exacto.</p>
+    </div>
+    <div class="precio-grid reveal">
+      <div class="precio-card">
+        <div class="eyebrow">Valor de entrada</div>
+        <h3>Parcelas tipo A</h3>
+        <div class="precio-rango">$25 MM <small>CLP</small></div>
+        <p class="precio-nota">Parcelas de ~5.000 m² con rol propio. Exentas de IVA bajo condición rústica.</p>
+        <ul class="precio-list">
+          <li>Superficie aprox. 5.000 m²</li>
+          <li>Acceso vehicular incluido</li>
+          <li>Escrituración al día</li>
+        </ul>
+      </div>
+      <div class="precio-card featured">
+        <div class="eyebrow">Más solicitadas</div>
+        <h3>Parcelas tipo B</h3>
+        <div class="precio-rango">$25–35 MM <small>CLP</small></div>
+        <p class="precio-nota">Parcelas de 5.000 a 6.500 m² con rol propio. Sin IVA, maximizando tu inversión.</p>
+        <ul class="precio-list">
+          <li>Superficie 5.000–6.500 m²</li>
+          <li>Acceso vehicular incluido</li>
+          <li>Escrituración al día</li>
+          <li>Financiamiento a convenir</li>
+        </ul>
+      </div>
+      <div class="precio-card">
+        <div class="eyebrow">Proceso de compra</div>
+        <h3>Simple y seguro</h3>
+        <p class="precio-nota" style="margin-top:0">Selecciona tu parcela en el mapa, contáctanos para confirmar precio y disponibilidad, coordina una visita y formaliza la reserva.</p>
+        <ul class="precio-list">
+          <li>Reserva con documentos</li>
+          <li>Visita al terreno</li>
+          <li>Firma de escritura</li>
+          <li>Entrega de llaves</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPARADOR ── -->
+<section class="comparador-section" id="comparador">
+  <div class="comp-wrap">
+    <div class="comp-header reveal">
+      <div class="eyebrow">Herramienta de comparación</div>
+      <h2 class="section-title">Compara dos <em>parcelas</em></h2>
+      <p class="section-desc" style="margin:0 auto">Selecciona dos lotes para ver sus diferencias lado a lado y decidir con más información.</p>
+    </div>
+    <div class="comp-selector reveal">
+      <div class="comp-picker">
+        <div class="comp-picker-title">Primera parcela</div>
+        <select id="comp-sel-a" onchange="actualizarComparador()">
+          <option value="">Selecciona un lote...</option>
+        </select>
+      </div>
+      <div class="comp-vs"><div class="comp-vs-circle">vs</div></div>
+      <div class="comp-picker">
+        <div class="comp-picker-title">Segunda parcela</div>
+        <select id="comp-sel-b" onchange="actualizarComparador()">
+          <option value="">Selecciona un lote...</option>
+        </select>
+      </div>
+    </div>
+    <div class="comp-result" id="comp-result">
+      <div class="comp-col" id="comp-col-a"></div>
+      <div class="comp-col" id="comp-col-b"></div>
+    </div>
+    <div class="comp-empty" id="comp-empty">Selecciona dos parcelas arriba para comparar</div>
+  </div>
+</section>
+
+<!-- ── UBICACIÓN ── -->
+<section class="ubicacion" id="ubicacion">
+  <div class="container">
+    <div class="ubicacion-inner">
+      <div class="reveal-left">
+        <div class="eyebrow">Cómo llegar</div>
+        <h2 class="section-title">En el <em>corazón</em><br>de la Araucanía</h2>
+        <p class="section-desc">A 9 km del camino que conecta Nueva Imperial con Carahue, con fácil acceso desde ambas ciudades y a menos de una hora de Temuco.</p>
+        <ul class="ubi-puntos">
+          <li class="ubi-punto"><span class="ubi-dist">9 km</span><span class="ubi-name">Camino Imperial–Carahue</span></li>
+          <li class="ubi-punto"><span class="ubi-dist">15 min</span><span class="ubi-name">Ciudad de Nueva Imperial</span></li>
+          <li class="ubi-punto"><span class="ubi-dist">20 min</span><span class="ubi-name">Ciudad de Carahue</span></li>
+          <li class="ubi-punto"><span class="ubi-dist">55 min</span><span class="ubi-name">Temuco, capital regional</span></li>
+        </ul>
+      </div>
+      <div class="reveal-right">
+        <div id="mapa-ubi"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACTO ── -->
+<section class="contacto" id="contacto">
+  <div class="container">
+    <div class="contacto-inner">
+      <div class="reveal-left">
+        <div class="eyebrow">Hablemos</div>
+        <h2 class="section-title">¿Te interesa<br>una <em>parcela</em>?</h2>
+        <p>Da el primer paso hacia tu parcela en Altos de Peñafiel. Resolvemos todas tus dudas, coordinamos una visita al terreno y te acompañamos en cada etapa — desde la elección del lote hasta la firma de escritura.</p>
+        <div class="contacto-datos">
+          <a href="tel:+56994447200" class="ci"><div class="ci-icon">📞</div><span>+56 9 9444 7200</span></a>
+          <a href="https://wa.me/56994447200" class="ci" target="_blank"><div class="ci-icon">💬</div><span>WhatsApp directo</span></a>
+          <a href="mailto:doctor@ganagro.cl" class="ci"><div class="ci-icon">✉️</div><span>doctor@ganagro.cl</span></a>
+          <div class="ci"><div class="ci-icon">📍</div><span>Nueva Imperial, Araucanía, Chile</span></div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <form class="form-contacto" onsubmit="enviarForm(event)">
+          <div class="form-title">Envíanos un mensaje</div>
+          <div class="form-group"><label>Nombre completo</label><input type="text" placeholder="Tu nombre" required></div>
+          <div class="form-group"><label>WhatsApp o teléfono</label><input type="tel" placeholder="+56 9 XXXX XXXX" required></div>
+          <div class="form-group"><label>Parcela de interés</label><select id="sel-parcela"><option value="">Sin preferencia — quiero más información</option></select></div>
+          <div class="form-group"><label>Mensaje</label><textarea placeholder="¿Tienes preguntas o quieres coordinar una visita?"></textarea></div>
+          <button type="submit" class="btn-submit">Enviar consulta</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">Altos de <span>Peñafiel</span> · Nueva Imperial, Araucanía</div>
+  <div class="footer-links">
+    <a href="#proyecto">Proyecto</a>
+    <a href="#mapa-parcelas">Parcelas</a>
+    <a href="#precios">Precios</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+  <div class="footer-copy" style="grid-column:1/-1;text-align:center;padding-top:.5rem;border-top:1px solid rgba(255,255,255,.06)">© 2025 Altos de Peñafiel · +56 9 9444 7200 · doctor@ganagro.cl</div>
+</footer>
+
+<!-- ── PANEL LATERAL ── -->
+<div class="sp-overlay" id="spOverlay" onclick="closeSP()"></div>
+<div class="side-panel" id="sidePanel">
+  <div class="sp-header">
+    <div>
+      <div class="sp-lote-eyebrow" id="spEyebrow">ALTOS DE PEÑAFIEL</div>
+      <div class="sp-lote-title" id="spTitle">Lote —</div>
+    </div>
+    <div class="sp-close" onclick="closeSP()">×</div>
+  </div>
+  <div class="sp-body">
+    <div id="spEstado" class="sp-estado sp-dis">Disponible</div>
+    <div class="sp-stats">
+      <div class="sp-stat"><div class="sp-stat-label">Superficie</div><div class="sp-stat-value" id="spSup">—</div></div>
+      <div class="sp-stat"><div class="sp-stat-label">Precio</div><div class="sp-stat-value" id="spPrecio" style="font-size:1rem">Consultar</div></div>
+    </div>
+    <div class="sp-divider"></div>
+    <div class="sp-info-row"><span class="sp-info-label">Proyecto</span><span class="sp-info-value">Altos de Peñafiel</span></div>
+    <div class="sp-info-row"><span class="sp-info-label">Ubicación</span><span class="sp-info-value">Nueva Imperial, Araucanía</span></div>
+    <div class="sp-info-row"><span class="sp-info-label">Tipo de terreno</span><span class="sp-info-value">Rústico · Suave</span></div>
+    <div class="sp-info-row"><span class="sp-info-label">Acceso vehicular</span><span class="sp-info-value">✓ Incluido</span></div>
+    <div class="sp-info-row"><span class="sp-info-label">Escrituración</span><span class="sp-info-value">✓ Al día</span></div>
+    <div class="sp-info-row"><span class="sp-info-label">Financiamiento</span><span class="sp-info-value">A convenir</span></div>
+  </div>
+  <div class="sp-footer">
+    <a id="spWa" href="#" target="_blank" class="sp-wa">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Consultar por WhatsApp
+    </a>
+    <div class="sp-form-btn" onclick="closeSP();document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Ir al formulario de contacto</div>
+  </div>
+</div>
+
+<!-- ── LIGHTBOX ── -->
+<div class="lightbox" id="lightbox" onclick="closeLB(event)">
+  <div class="lb-close" onclick="closeLBbtn()">×</div>
+  <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+</div>
+
+<script>
+// FOTOS — agrega las rutas de tus fotos aquí
+const FOTOS=[
+  "foto01.jpeg",
+  "foto02.jpeg",
+  "foto03.jpeg",
+  "foto04.jpeg",
+  "foto05.jpeg",
+  "foto06.jpeg",
+  "foto07.jpeg",
+  "foto08.jpeg",
+  "foto09.jpeg",
+  "foto10.jpeg",
+  "foto11.jpeg",
+  "foto12.jpeg",
+  "foto13.jpeg",
+  "foto14.jpeg",
+  "foto15.jpeg"
+];
+
+// ESTADOS — edita para cambiar disponibilidad y precios
+// Ejemplo: ES[5]={estado:'reservado',precio:28};
+const ES={};
+
+const PD = [{"lote":1,"area_m2":5080,"coords":[[-38.71156687,-73.04531337],[-38.71132173,-73.04507522],[-38.71082386,-73.04551072],[-38.71140743,-73.04612506],[-38.7114153,-73.04611568],[-38.71163592,-73.04582008],[-38.71183318,-73.04557342],[-38.71181184,-73.04555181],[-38.71180052,-73.04554035],[-38.71156687,-73.04531337]],"center":[-38.711518,-73.045594]},{"lote":2,"area_m2":5000,"coords":[[-38.71132173,-73.04507522],[-38.71110611,-73.04486576],[-38.71082577,-73.04460798],[-38.71017766,-73.04507324],[-38.71082386,-73.04551072],[-38.71132173,-73.04507522]],"center":[-38.710929,-73.045035]},{"lote":3,"area_m2":5566,"coords":[[-38.71140743,-73.04612506],[-38.71130645,-73.0462455],[-38.71114408,-73.04645235],[-38.71113233,-73.0464674],[-38.71098916,-73.04663621],[-38.71091195,-73.04673404],[-38.71083475,-73.04683186],[-38.71069726,-73.04697779],[-38.71063238,-73.04703878],[-38.71030515,-73.04671568],[-38.71107633,-73.0457765]],"center":[-38.710949,-73.046546]},{"lote":4,"area_m2":5478,"coords":[[-38.71082386,-73.04551072],[-38.71107633,-73.0457765],[-38.71030515,-73.04671568],[-38.7099017,-73.04631732],[-38.71032598,-73.0459462],[-38.71082386,-73.04551072]],"center":[-38.710543,-73.045963]},{"lote":5,"area_m2":5000,"coords":[[-38.71082386,-73.04551072],[-38.71017766,-73.04507324],[-38.70962972,-73.04546659],[-38.71032598,-73.0459462],[-38.71082386,-73.04551072]],"center":[-38.710356,-73.045501]},{"lote":6,"area_m2":5000,"coords":[[-38.71032594,-73.04594624],[-38.71032598,-73.0459462],[-38.70962972,-73.04546659],[-38.70916283,-73.04580174],[-38.70982807,-73.04638172],[-38.71032594,-73.04594624]],"center":[-38.709933,-73.045915]},{"lote":7,"area_m2":6050,"coords":[[-38.70947956,-73.04697122],[-38.70960655,-73.04704105],[-38.70988113,-73.04718868],[-38.70999242,-73.04723],[-38.7101222,-73.04724908],[-38.71022008,-73.04724938],[-38.71030669,-73.04724239],[-38.71041353,-73.04722392],[-38.71050748,-73.04717301],[-38.71059949,-73.04711254],[-38.71065512,-73.04706025],[-38.71063238,-73.04703878],[-38.7099017,-73.04631732],[-38.70982807,-73.04638172],[-38.70938884,-73.04690872],[-38.70947956,-73.04697122]],"center":[-38.710063,-73.047022]},{"lote":8,"area_m2":5610,"coords":[[-38.70916283,-73.04580174],[-38.70886672,-73.0460143],[-38.7088254,-73.04618788],[-38.7088705,-73.04626562],[-38.70891561,-73.04634336],[-38.70900042,-73.04647476],[-38.70908364,-73.04658544],[-38.70916685,-73.04669613],[-38.70925344,-73.04679126],[-38.70937612,-73.04689996],[-38.70938884,-73.04690872],[-38.70940959,-73.04688382],[-38.70982807,-73.04638172],[-38.70916283,-73.04580174]],"center":[-38.709165,-73.046431]},{"lote":9,"area_m2":5000,"coords":[[-38.71183318,-73.04557342],[-38.71163592,-73.04582008],[-38.7114153,-73.04611568],[-38.71140743,-73.04612506],[-38.71186329,-73.046721],[-38.71191982,-73.04660611],[-38.71231764,-73.0460437],[-38.71187414,-73.04561489],[-38.71183318,-73.04557342]],"center":[-38.711789,-73.046021]},{"lote":10,"area_m2":5010,"coords":[[-38.71159281,-73.04737737],[-38.71174156,-73.0469684],[-38.71186329,-73.046721],[-38.71140743,-73.04612506],[-38.71135694,-73.04618528],[-38.71130645,-73.0462455],[-38.71114408,-73.04645235],[-38.71113233,-73.0464674],[-38.71100706,-73.04661511],[-38.71159281,-73.04737737]],"center":[-38.711414,-73.046653]},{"lote":11,"area_m2":5040,"coords":[[-38.71063238,-73.04703878],[-38.71154739,-73.0479026],[-38.71158953,-73.04738639],[-38.71159281,-73.04737737],[-38.71100706,-73.04661511],[-38.71098916,-73.04663621],[-38.71083475,-73.04683186],[-38.71069726,-73.04697779],[-38.71063238,-73.04703878]],"center":[-38.711058,-73.047089]},{"lote":12,"area_m2":5082,"coords":[[-38.71065512,-73.04706025],[-38.71154739,-73.0479026],[-38.71153458,-73.04805959],[-38.71153585,-73.0483157],[-38.71062965,-73.04779375],[-38.71065512,-73.04706025]],"center":[-38.711093,-73.047699]},{"lote":13,"area_m2":5176,"coords":[[-38.71062965,-73.04779375],[-38.71153585,-73.0483157],[-38.71153744,-73.04863471],[-38.71061687,-73.04864218],[-38.71062331,-73.04797632],[-38.71062965,-73.04779375]],"center":[-38.710929,-73.048193]},{"lote":14,"area_m2":5000,"coords":[[-38.71061687,-73.04864218],[-38.71059551,-73.04919132],[-38.71154024,-73.04919617],[-38.71153744,-73.04863471],[-38.71061687,-73.04864218]],"center":[-38.710981,-73.048861]},{"lote":15,"area_m2":5000,"coords":[[-38.71059551,-73.04919132],[-38.71057504,-73.04971755],[-38.71154301,-73.04975264],[-38.71154024,-73.04919617],[-38.71059551,-73.04919132]],"center":[-38.71097,-73.04941]},{"lote":16,"area_m2":5000,"coords":[[-38.71057504,-73.04971755],[-38.71055457,-73.05024378],[-38.71091505,-73.05025761],[-38.71154565,-73.05028395],[-38.71154301,-73.04975264],[-38.71057504,-73.04971755]],"center":[-38.710951,-73.049996]},{"lote":17,"area_m2":5100,"coords":[[-38.71065512,-73.04706025],[-38.71059949,-73.04711254],[-38.71050748,-73.04717301],[-38.71041353,-73.04722392],[-38.71030669,-73.04724239],[-38.71022008,-73.04724938],[-38.7101222,-73.04724908],[-38.70999242,-73.04723],[-38.70995085,-73.04721457],[-38.70994039,-73.0479727],[-38.71062331,-73.04797632],[-38.71065512,-73.04706025]],"center":[-38.710332,-73.047314]},{"lote":18,"area_m2":5010,"coords":[[-38.7099404,-73.0479727],[-38.70993003,-73.04872953],[-38.71061327,-73.04873483],[-38.71061687,-73.04864218],[-38.71062331,-73.04797632],[-38.7099404,-73.0479727]],"center":[-38.710277,-73.048338]},{"lote":19,"area_m2":5000,"coords":[[-38.70993003,-73.04872953],[-38.70992725,-73.04893152],[-38.70989333,-73.04948405],[-38.71058368,-73.04949537],[-38.71059551,-73.04919132],[-38.71061327,-73.04873483],[-38.70993003,-73.04872953],[-38.70993003,-73.04872953]],"center":[-38.710175,-73.049003]},{"lote":20,"area_m2":5000,"coords":[[-38.71058368,-73.04949537],[-38.70989333,-73.04948405],[-38.70984833,-73.0502169],[-38.71055457,-73.05024378],[-38.71057504,-73.04971755],[-38.71058368,-73.04949537]],"center":[-38.71034,-73.049776]},{"lote":21,"area_m2":5000,"coords":[[-38.70938884,-73.04690872],[-38.70938749,-73.04710486],[-38.70938338,-73.04770044],[-38.7093814,-73.04798845],[-38.70994001,-73.04800063],[-38.7099404,-73.0479727],[-38.70995085,-73.04721457],[-38.70988113,-73.04718868],[-38.70960655,-73.04704105],[-38.70947956,-73.04697122],[-38.70938884,-73.04690872],[-38.70938884,-73.04690872]],"center":[-38.709593,-73.047326]},{"lote":22,"area_m2":5000,"coords":[[-38.70937495,-73.04892196],[-38.70973367,-73.04892817],[-38.70992725,-73.04893152],[-38.70994001,-73.04800063],[-38.7093814,-73.04798845],[-38.70937495,-73.04892196]],"center":[-38.709622,-73.048615]},{"lote":23,"area_m2":5010,"coords":[[-38.70944216,-73.05020221],[-38.70984833,-73.0502169],[-38.70992725,-73.04893152],[-38.70952432,-73.04892455],[-38.70944216,-73.05020221]],"center":[-38.709637,-73.049695]},{"lote":24,"area_m2":5220,"coords":[[-38.70856463,-73.04591696],[-38.70856454,-73.04602727],[-38.70856373,-73.04698599],[-38.70938749,-73.04710486],[-38.70938884,-73.04690872],[-38.70937612,-73.04689996],[-38.70925344,-73.04679126],[-38.70916685,-73.04669613],[-38.70900042,-73.04647476],[-38.70891561,-73.04634336],[-38.7088254,-73.04618788],[-38.70886672,-73.0460143],[-38.70856463,-73.04591696]],"center":[-38.708957,-73.046482]},{"lote":25,"area_m2":5000,"coords":[[-38.70856373,-73.04698599],[-38.70856317,-73.04765003],[-38.70938338,-73.04770044],[-38.70938749,-73.04710486],[-38.70856373,-73.04698599]],"center":[-38.708892,-73.047285]},{"lote":26,"area_m2":5000,"coords":[[-38.70938338,-73.04770044],[-38.70856317,-73.04765003],[-38.70856262,-73.04829922],[-38.70937913,-73.04831673],[-38.7093814,-73.04798845],[-38.70938338,-73.04770044]],"center":[-38.709109,-73.047943]},{"lote":27,"area_m2":5010,"coords":[[-38.70856262,-73.04829922],[-38.70856204,-73.04897012],[-38.70889723,-73.04894819],[-38.70937495,-73.04892196],[-38.70937913,-73.04831673],[-38.70856262,-73.04829922]],"center":[-38.70889,-73.048626]},{"lote":28,"area_m2":5020,"coords":[[-38.70937495,-73.04892196],[-38.70911457,-73.04893625],[-38.70903156,-73.05018736],[-38.70944216,-73.05020221],[-38.70952432,-73.04892455],[-38.70937495,-73.04892196]],"center":[-38.70931,-73.049349]},{"lote":29,"area_m2":5003,"coords":[[-38.70911457,-73.04893625],[-38.70903156,-73.05018736],[-38.70861219,-73.05017219],[-38.70869166,-73.04896163],[-38.70890308,-73.04894786],[-38.70911457,-73.04893625]],"center":[-38.708911,-73.049357]},{"lote":30,"area_m2":5760,"coords":[[-38.7080807,-73.04585005],[-38.70805085,-73.04703794],[-38.70856367,-73.0470669],[-38.70856373,-73.04698599],[-38.70856463,-73.04591696],[-38.70826255,-73.04581962],[-38.7080807,-73.04585005]],"center":[-38.70831,-73.046361]},{"lote":31,"area_m2":5010,"coords":[[-38.70805085,-73.04703794],[-38.70802579,-73.04803438],[-38.70856283,-73.04804614],[-38.70856317,-73.04765003],[-38.70856367,-73.0470669],[-38.70805085,-73.04703794]],"center":[-38.708303,-73.047479]},{"lote":32,"area_m2":5020,"coords":[[-38.70802579,-73.04803438],[-38.70800134,-73.0490068],[-38.70856204,-73.04897012],[-38.70856283,-73.04804614],[-38.70802579,-73.04803438]],"center":[-38.708236,-73.048418]},{"lote":33,"area_m2":5000,"coords":[[-38.70861219,-73.05017219],[-38.70869167,-73.04896163],[-38.70823835,-73.04899129],[-38.70819301,-73.05015703],[-38.70861219,-73.05017219]],"center":[-38.708469,-73.049691]},{"lote":34,"area_m2":6030,"coords":[[-38.7074616,-73.04592242],[-38.70748973,-73.04684253],[-38.70749322,-73.04695675],[-38.7080528,-73.0469604],[-38.7080807,-73.04585005],[-38.70758905,-73.04593231],[-38.7074616,-73.04592242]],"center":[-38.707661,-73.046341]},{"lote":35,"area_m2":5000,"coords":[[-38.70752307,-73.04793368],[-38.70802845,-73.04792865],[-38.70805085,-73.04703794],[-38.7080528,-73.0469604],[-38.70749322,-73.04695675],[-38.70752307,-73.04793368]],"center":[-38.707779,-73.047459]},{"lote":36,"area_m2":5000,"coords":[[-38.70752307,-73.04793368],[-38.70755675,-73.04903588],[-38.70800134,-73.0490068],[-38.70802579,-73.04803438],[-38.70802845,-73.04792865],[-38.70752307,-73.04793368]],"center":[-38.707776,-73.048312]},{"lote":37,"area_m2":5020,"coords":[[-38.70823835,-73.04899129],[-38.70777904,-73.04902134],[-38.70774133,-73.0501407],[-38.70819301,-73.05015703],[-38.70823835,-73.04899129]],"center":[-38.708038,-73.04946]},{"lote":38,"area_m2":6000,"coords":[[-38.7074616,-73.04592242],[-38.70741427,-73.04591874],[-38.70725959,-73.04588722],[-38.7070954,-73.04583761],[-38.70695909,-73.04579368],[-38.70684799,-73.04571518],[-38.70685013,-73.0468394],[-38.70748973,-73.04684253],[-38.7074616,-73.04592242]],"center":[-38.707204,-73.046075]},{"lote":39,"area_m2":5000,"coords":[[-38.70748973,-73.04684253],[-38.70685013,-73.0468394],[-38.70685163,-73.04762789],[-38.70751426,-73.04764529],[-38.70748973,-73.04684253],[-38.70748973,-73.04684253]],"center":[-38.707281,-73.047107]},{"lote":40,"area_m2":5000,"coords":[[-38.70685163,-73.04762789],[-38.70685311,-73.04840596],[-38.70753749,-73.04840536],[-38.70752307,-73.04793368],[-38.70751426,-73.04764529],[-38.70685163,-73.04762789]],"center":[-38.707189,-73.047941]},{"lote":41,"area_m2":5000,"coords":[[-38.70621189,-73.04663639],[-38.70626728,-73.04657424],[-38.70635095,-73.04645818],[-38.70648342,-73.04625236],[-38.70656553,-73.04617039],[-38.70661166,-73.04613794],[-38.7067729,-73.04609113],[-38.70684869,-73.0460839],[-38.70684799,-73.04571518],[-38.70682536,-73.04569918],[-38.70629832,-73.04529195],[-38.70619546,-73.04529648],[-38.70621189,-73.04663639]],"center":[-38.706499,-73.04608]},{"lote":42,"area_m2":5020,"coords":[[-38.70621189,-73.04663639],[-38.70621744,-73.04708979],[-38.7068506,-73.04708689],[-38.70685013,-73.0468394],[-38.70684869,-73.0460839],[-38.7067729,-73.04609113],[-38.70669228,-73.04611453],[-38.70661166,-73.04613794],[-38.70656553,-73.04617039],[-38.70648342,-73.04625236],[-38.70635095,-73.04645818],[-38.70626728,-73.04657424],[-38.70621189,-73.04663639]],"center":[-38.706533,-73.046475]},{"lote":43,"area_m2":5000,"coords":[[-38.70621744,-73.04708979],[-38.70622756,-73.0479163],[-38.70685216,-73.04790721],[-38.7068506,-73.04708689],[-38.70621744,-73.04708979]],"center":[-38.706473,-73.047418]},{"lote":44,"area_m2":5170,"coords":[[-38.70619546,-73.04529648],[-38.70607899,-73.04530161],[-38.70580882,-73.04523512],[-38.70579813,-73.04655868],[-38.70621232,-73.04667178],[-38.70619546,-73.04529648]],"center":[-38.706048,-73.045727]},{"lote":45,"area_m2":5540,"coords":[[-38.7061866,-73.04666476],[-38.70615649,-73.04669854],[-38.70608156,-73.04678454],[-38.70603593,-73.04687262],[-38.70599948,-73.04695489],[-38.70594677,-73.0471147],[-38.70589494,-73.04719532],[-38.70584578,-73.04723061],[-38.70570073,-73.04732068],[-38.7056146,-73.04739709],[-38.70553027,-73.04749287],[-38.70548204,-73.04757696],[-38.70547863,-73.04764781],[-38.70550202,-73.0478384],[-38.7054888,-73.04792797],[-38.70622756,-73.0479163],[-38.70621744,-73.04708979],[-38.70621232,-73.04667178],[-38.7061866,-73.04666476]],"center":[-38.705884,-73.047214]},{"lote":46,"area_m2":5110,"coords":[[-38.70579813,-73.04655868],[-38.70580882,-73.04523512],[-38.70541064,-73.04513712],[-38.70539427,-73.04644841],[-38.70579813,-73.04655868]],"center":[-38.705642,-73.045988]},{"lote":47,"area_m2":6360,"coords":[[-38.70603593,-73.04687262],[-38.70604578,-73.04685361],[-38.70608156,-73.04678454],[-38.70615649,-73.04669854],[-38.7061866,-73.04666476],[-38.70615341,-73.04665569],[-38.70579813,-73.04655868],[-38.70520369,-73.04639637],[-38.70519265,-73.04728815],[-38.7056146,-73.04739709],[-38.70570073,-73.04732068],[-38.70584578,-73.04723061],[-38.70589494,-73.04719532],[-38.70594677,-73.0471147],[-38.70597312,-73.0470348],[-38.70599948,-73.04695489],[-38.70603593,-73.04687262]],"center":[-38.705874,-73.046935]},{"lote":48,"area_m2":5100,"coords":[[-38.70541064,-73.04513712],[-38.70512491,-73.04506681],[-38.70499677,-73.04509453],[-38.70499624,-73.04633973],[-38.70539427,-73.04644841],[-38.70541064,-73.04513712]],"center":[-38.705222,-73.045537]},{"lote":49,"area_m2":5000,"coords":[[-38.70520369,-73.04639637],[-38.70499624,-73.04633973],[-38.70462166,-73.04623745],[-38.70461708,-73.04713099],[-38.70519265,-73.04728815],[-38.70520369,-73.04639637]],"center":[-38.704973,-73.046632]},{"lote":50,"area_m2":5140,"coords":[[-38.7045222,-73.04519018],[-38.70452949,-73.04621229],[-38.70499624,-73.04633973],[-38.70499677,-73.04509453],[-38.70456827,-73.04518723],[-38.7045222,-73.04519018]],"center":[-38.704689,-73.045536]}];
+
+// Init estados
+PD.forEach(p=>{ES[p.lote]=ES[p.lote]||{estado:'disponible',precio:0};});
+
+// Disponibilidad counter
+function updateCounter(){
+  var dis=PD.filter(p=>(ES[p.lote]||{}).estado==='disponible').length;
+  document.getElementById('heroAvailNum').textContent=dis+' parcelas disponibles';
+}
+updateCounter();
+
+// NAV scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('solid',window.scrollY>60);
+});
+
+// MAPA
+var cols={disponible:'#1A6B35',reservado:'#8B6914',vendido:'#8B1A1A'};
+var layers=[],filtro='todos';
+var map=L.map('mapa',{zoomControl:true}).setView([-38.7074,-73.0468],16);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxZoom:20}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{attribution:'',maxZoom:20,opacity:0.7}).addTo(map);
+
+function getLabelSize(z){
+  if(z<=14)return 0;if(z===15)return 7;if(z===16)return 9;
+  if(z===17)return 12;if(z===18)return 15;return 18;
+}
+
+function renderMap(){
+  layers.forEach(l=>map.removeLayer(l));layers=[];
+  var z=map.getZoom(),fs=getLabelSize(z);
+  PD.forEach(function(p){
+    var e=ES[p.lote]||{estado:'disponible',precio:0};
+    if(filtro!=='todos'&&e.estado!==filtro)return;
+    var c=cols[e.estado]||cols.disponible;
+    var sm=p.area_m2||0;
+    var st=sm>=10000?(sm/10000).toFixed(2)+' há':sm.toLocaleString('es-CL')+' m²';
+    var pt=e.precio>0?('$'+e.precio+' millones CLP'):'Consultar precio';
+    var el=e.estado==='disponible'?'Disponible':e.estado==='reservado'?'Reservada':'Vendida';
+
+    var poly=L.polygon(p.coords,{
+      color:c,weight:1.5,opacity:1,fillColor:c,fillOpacity:0.1
+    }).addTo(map);
+
+    poly.bindTooltip(
+      '<span style="font-family:Playfair Display,serif;font-size:13px;font-weight:500">Lote '+p.lote+'</span> · '+st,
+      {permanent:false,sticky:true,className:'lote-hover-label',direction:'top'}
+    );
+    poly.on('click',function(){openSP(p.lote,p.area_m2,e.estado,e.precio);});
+    poly.on('mouseover',function(){
+      this.setStyle({fillOpacity:0.4,weight:2,color:'#B8924A'});
+      this.bringToFront();
+    });
+    poly.on('mouseout',function(){
+      this.setStyle({fillOpacity:0.1,weight:1.5,color:c});
+    });
+    layers.push(poly);
+
+    if(fs>0){
+      var op=Math.min(1,(fs-6)/10);
+      var icon=L.divIcon({
+        html:'<div style="font-size:'+fs+'px;font-weight:600;font-family:Jost,sans-serif;color:rgba(255,255,255,'+op+');text-shadow:-1px -1px 0 rgba(0,0,0,'+op+'),1px -1px 0 rgba(0,0,0,'+op+'),-1px 1px 0 rgba(0,0,0,'+op+'),1px 1px 0 rgba(0,0,0,'+op+');pointer-events:none;white-space:nowrap;line-height:1;">'+p.lote+'</div>',
+        className:'',iconSize:[fs*2,fs],iconAnchor:[fs,fs/2]
+      });
+      var lbl=L.marker(p.center,{icon:icon,interactive:false,zIndexOffset:-1000}).addTo(map);
+      layers.push(lbl);
+    }
+  });
+}
+map.on('zoomend',renderMap);
+renderMap();
+
+// CAMINO PÚBLICO Imperial–Carahue
+var roadCoords=[[-38.71245, -73.04598], [-38.71231, -73.04604], [-38.71183, -73.04557], [-38.71156, -73.04531], [-38.71132, -73.04507], [-38.7111, -73.04487], [-38.71082, -73.04461], [-38.7105, -73.0444]];
+var roadLine=L.polyline(roadCoords,{
+  color:'#E8B84B',weight:6,opacity:.95,
+  dashArray:'1,1',lineCap:'round',lineJoin:'round'
+}).addTo(map);
+roadLine.bindTooltip('Camino público Imperial–Carahue',{
+  permanent:false,sticky:true,direction:'left',
+  className:'lote-hover-label'
+});
+// Label permanente visible desde zoom 16+
+var roadLabel=L.marker([-38.71156,-73.04495],{
+  icon:L.divIcon({
+    html:'<div style="background:rgba(232,184,75,.92);color:#412402;font-size:9px;font-weight:700;padding:2px 6px;border-radius:2px;white-space:nowrap;letter-spacing:.06em;transform:rotate(-80deg);transform-origin:center">CAMINO PÚBLICO</div>',
+    className:'',iconAnchor:[0,0]
+  }),interactive:false
+});
+map.on('zoomend',function(){
+  if(map.getZoom()>=16)roadLabel.addTo(map);
+  else map.removeLayer(roadLabel);
+});
+
+function switchMapTab(tab, btn){
+  document.querySelectorAll('.map-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.map-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pane-'+tab).classList.add('active');
+  if(tab==='satelital') setTimeout(()=>map.invalidateSize(),100);
+  if(tab==='3d') setTimeout(()=>init3dMap(),50);
+}
+
+// CAMINO PÚBLICO
+var caminoCoords=[[-38.71231764, -73.0460437], [-38.71183318, -73.04557342], [-38.71156687, -73.04531337], [-38.71132173, -73.04507522], [-38.71110611, -73.04486576], [-38.71082577, -73.04460798]];
+var caminoLine = L.polyline(caminoCoords, {
+  color: '#E8B84B',
+  weight: 6,
+  opacity: 0.95,
+  dashArray: null
+}).addTo(map);
+// Sombra/borde
+var caminoSombra = L.polyline(caminoCoords, {
+  color: '#1a1a1a',
+  weight: 10,
+  opacity: 0.5
+}).addTo(map);
+caminoSombra.bringToBack();
+caminoLine.bringToFront();
+caminoLine.bindTooltip('Camino público Imperial–Carahue', {
+  permanent: false, sticky: true,
+  className: 'lote-hover-label', direction: 'right'
+});
+// Label permanente en el centro del camino
+var caminoMid = caminoCoords[Math.floor(caminoCoords.length/2)];
+L.marker(caminoMid, {
+  icon: L.divIcon({
+    html: '<div style="background:#E8B84B;color:#412402;font-size:9px;font-weight:800;padding:2px 7px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;font-family:Jost,sans-serif;transform:rotate(-75deg);transform-origin:center;">Camino público</div>',
+    className: '',
+    iconAnchor: [40, 10]
+  }),
+  interactive: false
+}).addTo(map);
+
+function filtrarMapa(e,btn){
+  filtro=e;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');renderMap();
+}
+
+// GEOLOCALIZACIÓN
+var geoMarker=null;
+function ubicarme(){
+  var btn=document.querySelector('.geo-btn');
+  btn.textContent='📡 Buscando...';
+  if(!navigator.geolocation){btn.textContent='📡 No disponible';return;}
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var lat=pos.coords.latitude,lng=pos.coords.longitude;
+    if(geoMarker)map.removeLayer(geoMarker);
+    geoMarker=L.circleMarker([lat,lng],{radius:10,color:'#0B1C2C',fillColor:'#B8924A',fillOpacity:.9,weight:2}).addTo(map);
+    geoMarker.bindPopup('<b style="font-family:Playfair Display,serif">Tu ubicación</b>').openPopup();
+    map.setView([lat,lng],18);
+    btn.textContent='📡 Mi ubicación';
+  },function(){btn.textContent='📡 Sin permiso';setTimeout(function(){btn.textContent='📡 Mi ubicación';},2000);});
+}
+
+// MAPA UBICACIÓN
+var mu=L.map('mapa-ubi').setView([-38.708,-73.047],13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(mu);
+L.circleMarker([-38.708,-73.047],{radius:10,color:'#0B1C2C',fillColor:'#B8924A',fillOpacity:.9,weight:2}).addTo(mu).bindPopup('<b style="font-family:Playfair Display,serif">Altos de Peñafiel</b><br><small>Nueva Imperial, Araucanía</small>').openPopup();
+
+// PANEL LATERAL
+function openSP(lote,area_m2,estado,precio){
+  var sm=area_m2||0;
+  var st=sm>=10000?(sm/10000).toFixed(2)+' há':sm.toLocaleString('es-CL')+' m²';
+  var pt=precio>0?('$'+precio+' millones CLP'):'Consultar precio';
+  var el=estado==='disponible'?'Disponible':estado==='reservado'?'Reservada':'Vendida';
+  var ec=estado==='disponible'?'sp-dis':estado==='reservado'?'sp-res':'sp-ven';
+  document.getElementById('spEyebrow').textContent='ALTOS DE PEÑAFIEL · LOTE '+lote;
+  document.getElementById('spTitle').textContent='Lote '+lote;
+  document.getElementById('spSup').innerHTML=sm.toLocaleString('es-CL')+' <small>m²</small>';
+  document.getElementById('spPrecio').textContent=pt;
+  var eEl=document.getElementById('spEstado');
+  eEl.textContent=el;eEl.className='sp-estado '+ec;
+  var msg=encodeURIComponent('Hola, me interesa el Lote '+lote+' de Altos de Peñafiel ('+st+'). ¿Me puede dar más información y coordinar una visita?');
+  document.getElementById('spWa').href='https://wa.me/56994447200?text='+msg;
+  document.getElementById('sidePanel').classList.add('open');
+  document.getElementById('spOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function closeSP(){
+  document.getElementById('sidePanel').classList.remove('open');
+  document.getElementById('spOverlay').classList.remove('active');
+  document.body.style.overflow='';
+}
+
+// GALERÍA
+var curPhoto=0;
+function initGallery(){
+  var g=document.getElementById('galleryGrid');g.innerHTML='';
+  if(!FOTOS.length){
+    var names=['Vista aérea general','Sector norte','Sector sur','Acceso principal','Linde este'];
+    var classes=['gi-1','gi-2','gi-3','gi-4','gi-5'];
+    names.forEach(function(txt,i){
+      var d=document.createElement('div');
+      d.className='gallery-item '+(classes[i]||'gi-6');
+      d.innerHTML='<div class="gallery-placeholder"><div class="gallery-placeholder-icon">🌿</div><div class="gallery-placeholder-txt">'+txt+'</div></div>';
+      g.appendChild(d);
+    });
+  }else{
+    // Asignar clases de grid rotativamente para composición variada
+    var cls=['gi-1','gi-2','gi-3','gi-4','gi-5','gi-6','gi-6','gi-6','gi-6','gi-6','gi-6','gi-6','gi-6','gi-6','gi-6'];
+    FOTOS.forEach(function(src,i){
+      var d=document.createElement('div');
+      d.className='gallery-item '+(cls[i]||'gi-6');
+      d.innerHTML='<img src="'+src+'" alt="Altos de Peñafiel" loading="lazy"><div class="gallery-overlay"><span>Ver imagen</span></div>';
+      d.onclick=function(){openLB(i);};
+      g.appendChild(d);
+    });
+  }
+}
+initGallery();
+
+// SELECT PARCELAS
+PD.forEach(function(p){
+  if((ES[p.lote]||{}).estado==='disponible'){
+    var o=document.createElement('option');
+    o.value=p.lote;
+    o.textContent='Lote '+p.lote+' — '+(p.area_m2||0).toLocaleString('es-CL')+' m²';
+    document.getElementById('sel-parcela').appendChild(o);
+  }
+});
+
+// LIGHTBOX
+function openLB(i){if(!FOTOS.length)return;curPhoto=i;document.getElementById('lbImg').src=FOTOS[i];document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden';}
+function closeLB(e){if(e.target===document.getElementById('lightbox'))closeLBbtn();}
+function closeLBbtn(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
+function lbNav(d){curPhoto=(curPhoto+d+FOTOS.length)%FOTOS.length;document.getElementById('lbImg').src=FOTOS[curPhoto];}
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('lightbox').classList.contains('open')){
+    if(e.key==='Escape')closeLBbtn();
+    if(e.key==='ArrowRight')lbNav(1);
+    if(e.key==='ArrowLeft')lbNav(-1);
+  }
+});
+
+// FORMULARIO
+function enviarForm(e){
+  e.preventDefault();
+  var b=e.target.querySelector('.btn-submit');
+  b.textContent='✓ Mensaje enviado — te contactamos pronto';
+  b.style.background='#1A6B35';
+  setTimeout(function(){b.textContent='Enviar consulta';b.style.background='';e.target.reset();},4000);
+}
+
+// COMPARADOR
+// CALCULADORA
+function calcular(){
+  var pres=parseInt(document.getElementById('calc-presupuesto').value);
+  var sup=parseInt(document.getElementById('calc-sup').value);
+  document.getElementById('calc-presupuesto-val').textContent='$'+pres+' MM';
+  document.getElementById('calc-sup-val').textContent=sup.toLocaleString('es-CL')+' m²';
+  var iva=pres*0.19;
+  var urbano=pres+iva;
+  var alcanza=pres<=35;
+  document.getElementById('cr-precio').textContent='$'+pres+' MM';
+  document.getElementById('cr-iva').textContent='$0 — Exento';
+  document.getElementById('cr-urbano').textContent='Pagarías ~$'+urbano.toFixed(1)+' MM';
+  document.getElementById('cr-ahorro').textContent='~$'+iva.toFixed(1)+' MM';
+  document.getElementById('cr-alcanza').textContent=alcanza?'✓ Sí alcanza':'Consultar opciones';
+  document.getElementById('cr-alcanza').style.color=alcanza?'#4ade80':'#f59e0b';
+}
+calcular();
+
+function initComparador(){
+  const selA=document.getElementById('comp-sel-a');
+  const selB=document.getElementById('comp-sel-b');
+  if(!selA||!selB)return;
+  PD.forEach(p=>{
+    const e=ES[p.lote]||{estado:'disponible',precio:0};
+    const est=e.estado==='disponible'?'Disponible':e.estado==='reservado'?'Reservada':'Vendida';
+    const txt='Lote '+p.lote+' — '+p.area_m2.toLocaleString('es-CL')+' m² ('+est+')';
+    [selA,selB].forEach(sel=>{const o=document.createElement('option');o.value=p.lote;o.textContent=txt;sel.appendChild(o);});
+  });
+}
+
+function actualizarComparador(){
+  const va=document.getElementById('comp-sel-a').value;
+  const vb=document.getElementById('comp-sel-b').value;
+  const result=document.getElementById('comp-result');
+  const empty=document.getElementById('comp-empty');
+  if(!va||!vb||va===vb){result.classList.remove('visible');empty.style.display='block';return;}
+  const la=PD.find(p=>p.lote==va), lb=PD.find(p=>p.lote==vb);
+  if(!la||!lb)return;
+  result.classList.add('visible');empty.style.display='none';
+  renderCompCol('comp-col-a',la,lb);
+  renderCompCol('comp-col-b',lb,la);
+}
+
+function renderCompCol(id,l,other){
+  const e=ES[l.lote]||{estado:'disponible',precio:0};
+  const est=e.estado==='disponible'?'Disponible':e.estado==='reservado'?'Reservada':'Vendida';
+  const estColor=e.estado==='disponible'?'color:#1A6B35':e.estado==='reservado'?'color:#8B6914':'color:#8B1A1A';
+  const precio=e.precio>0?'$'+e.precio+' MM':'Consultar';
+  const eo=ES[other.lote]||{estado:'disponible',precio:0};
+  const biggerArea=l.area_m2>=other.area_m2;
+  const lowerPrice=e.precio>0&&eo.precio>0&&e.precio<=eo.precio;
+  const msg=encodeURIComponent('Hola, me interesa el Lote '+l.lote+' de Altos de Peñafiel ('+l.area_m2.toLocaleString('es-CL')+' m²). ¿Me puede dar más información?');
+  document.getElementById(id).innerHTML=`
+    <div class="comp-col-header">
+      <div class="comp-lote-num">Lote ${l.lote}</div>
+      <div class="comp-lote-estado" style="${estColor}">${est}</div>
+    </div>
+    <div class="comp-row"><span class="comp-row-label">Superficie</span><span class="comp-row-value ${biggerArea?'better':''}">${l.area_m2.toLocaleString('es-CL')} m²</span></div>
+    <div class="comp-row"><span class="comp-row-label">Precio</span><span class="comp-row-value ${lowerPrice?'highlight':''}">${precio}</span></div>
+    <div class="comp-row"><span class="comp-row-label">Exento de IVA</span><span class="comp-row-value better">✓ Sí</span></div>
+    <div class="comp-row"><span class="comp-row-label">Rol propio</span><span class="comp-row-value better">✓ Garantizado</span></div>
+    <div class="comp-row"><span class="comp-row-label">Acceso vehicular</span><span class="comp-row-value">✓ Incluido</span></div>
+    <a href="https://wa.me/56994447200?text=${msg}" target="_blank" class="comp-btn-wa">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Consultar este lote
+    </a>`;
+}
+initComparador();
+
+// SCROLL REVEAL
+var observer=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('up');});
+},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(function(el){observer.observe(el);});
+
+// NAV MÓVIL
+function toggleNav(){
+  var links=document.querySelector('.nav-links');
+  var open=links.style.display==='flex';
+  if(open){
+    links.style.display='none';
+  }else{
+    links.style.cssText='display:flex;flex-direction:column;position:fixed;top:68px;left:0;right:0;background:white;padding:2rem;gap:1.5rem;border-bottom:1px solid var(--border);z-index:850;box-shadow:0 8px 32px rgba(11,28,44,.1)';
+    links.querySelectorAll('a').forEach(function(a){a.style.color='var(--navy)';});
+  }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/earcut@2.2.4/src/earcut.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script>
+
+var _3d_initialized = false;
+function init3dMap(){
+  if(_3d_initialized) return;
+  _3d_initialized = true;
+
+
+const PD = [{"lote":1,"area_m2":5080,"coords":[[-38.71156687,-73.04531337],[-38.71132173,-73.04507522],[-38.71082386,-73.04551072],[-38.71140743,-73.04612506],[-38.7114153,-73.04611568],[-38.71163592,-73.04582008],[-38.71183318,-73.04557342],[-38.71181184,-73.04555181],[-38.71180052,-73.04554035],[-38.71156687,-73.04531337]],"center":[-38.711518,-73.045594]},{"lote":2,"area_m2":5000,"coords":[[-38.71132173,-73.04507522],[-38.71110611,-73.04486576],[-38.71082577,-73.04460798],[-38.71017766,-73.04507324],[-38.71082386,-73.04551072],[-38.71132173,-73.04507522]],"center":[-38.710929,-73.045035]},{"lote":3,"area_m2":5566,"coords":[[-38.71140743,-73.04612506],[-38.71130645,-73.0462455],[-38.71114408,-73.04645235],[-38.71113233,-73.0464674],[-38.71098916,-73.04663621],[-38.71091195,-73.04673404],[-38.71083475,-73.04683186],[-38.71069726,-73.04697779],[-38.71063238,-73.04703878],[-38.71030515,-73.04671568],[-38.71107633,-73.0457765]],"center":[-38.710949,-73.046546]},{"lote":4,"area_m2":5478,"coords":[[-38.71082386,-73.04551072],[-38.71107633,-73.0457765],[-38.71030515,-73.04671568],[-38.7099017,-73.04631732],[-38.71032598,-73.0459462],[-38.71082386,-73.04551072]],"center":[-38.710543,-73.045963]},{"lote":5,"area_m2":5000,"coords":[[-38.71082386,-73.04551072],[-38.71017766,-73.04507324],[-38.70962972,-73.04546659],[-38.71032598,-73.0459462],[-38.71082386,-73.04551072]],"center":[-38.710356,-73.045501]},{"lote":6,"area_m2":5000,"coords":[[-38.71032594,-73.04594624],[-38.71032598,-73.0459462],[-38.70962972,-73.04546659],[-38.70916283,-73.04580174],[-38.70982807,-73.04638172],[-38.71032594,-73.04594624]],"center":[-38.709933,-73.045915]},{"lote":7,"area_m2":6050,"coords":[[-38.70947956,-73.04697122],[-38.70960655,-73.04704105],[-38.70988113,-73.04718868],[-38.70999242,-73.04723],[-38.7101222,-73.04724908],[-38.71022008,-73.04724938],[-38.71030669,-73.04724239],[-38.71041353,-73.04722392],[-38.71050748,-73.04717301],[-38.71059949,-73.04711254],[-38.71065512,-73.04706025],[-38.71063238,-73.04703878],[-38.7099017,-73.04631732],[-38.70982807,-73.04638172],[-38.70938884,-73.04690872],[-38.70947956,-73.04697122]],"center":[-38.710063,-73.047022]},{"lote":8,"area_m2":5610,"coords":[[-38.70916283,-73.04580174],[-38.70886672,-73.0460143],[-38.7088254,-73.04618788],[-38.7088705,-73.04626562],[-38.70891561,-73.04634336],[-38.70900042,-73.04647476],[-38.70908364,-73.04658544],[-38.70916685,-73.04669613],[-38.70925344,-73.04679126],[-38.70937612,-73.04689996],[-38.70938884,-73.04690872],[-38.70940959,-73.04688382],[-38.70982807,-73.04638172],[-38.70916283,-73.04580174]],"center":[-38.709165,-73.046431]},{"lote":9,"area_m2":5000,"coords":[[-38.71183318,-73.04557342],[-38.71163592,-73.04582008],[-38.7114153,-73.04611568],[-38.71140743,-73.04612506],[-38.71186329,-73.046721],[-38.71191982,-73.04660611],[-38.71231764,-73.0460437],[-38.71187414,-73.04561489],[-38.71183318,-73.04557342]],"center":[-38.711789,-73.046021]},{"lote":10,"area_m2":5010,"coords":[[-38.71159281,-73.04737737],[-38.71174156,-73.0469684],[-38.71186329,-73.046721],[-38.71140743,-73.04612506],[-38.71135694,-73.04618528],[-38.71130645,-73.0462455],[-38.71114408,-73.04645235],[-38.71113233,-73.0464674],[-38.71100706,-73.04661511],[-38.71159281,-73.04737737]],"center":[-38.711414,-73.046653]},{"lote":11,"area_m2":5040,"coords":[[-38.71063238,-73.04703878],[-38.71154739,-73.0479026],[-38.71158953,-73.04738639],[-38.71159281,-73.04737737],[-38.71100706,-73.04661511],[-38.71098916,-73.04663621],[-38.71083475,-73.04683186],[-38.71069726,-73.04697779],[-38.71063238,-73.04703878]],"center":[-38.711058,-73.047089]},{"lote":12,"area_m2":5082,"coords":[[-38.71065512,-73.04706025],[-38.71154739,-73.0479026],[-38.71153458,-73.04805959],[-38.71153585,-73.0483157],[-38.71062965,-73.04779375],[-38.71065512,-73.04706025]],"center":[-38.711093,-73.047699]},{"lote":13,"area_m2":5176,"coords":[[-38.71062965,-73.04779375],[-38.71153585,-73.0483157],[-38.71153744,-73.04863471],[-38.71061687,-73.04864218],[-38.71062331,-73.04797632],[-38.71062965,-73.04779375]],"center":[-38.710929,-73.048193]},{"lote":14,"area_m2":5000,"coords":[[-38.71061687,-73.04864218],[-38.71059551,-73.04919132],[-38.71154024,-73.04919617],[-38.71153744,-73.04863471],[-38.71061687,-73.04864218]],"center":[-38.710981,-73.048861]},{"lote":15,"area_m2":5000,"coords":[[-38.71059551,-73.04919132],[-38.71057504,-73.04971755],[-38.71154301,-73.04975264],[-38.71154024,-73.04919617],[-38.71059551,-73.04919132]],"center":[-38.71097,-73.04941]},{"lote":16,"area_m2":5000,"coords":[[-38.71057504,-73.04971755],[-38.71055457,-73.05024378],[-38.71091505,-73.05025761],[-38.71154565,-73.05028395],[-38.71154301,-73.04975264],[-38.71057504,-73.04971755]],"center":[-38.710951,-73.049996]},{"lote":17,"area_m2":5100,"coords":[[-38.71065512,-73.04706025],[-38.71059949,-73.04711254],[-38.71050748,-73.04717301],[-38.71041353,-73.04722392],[-38.71030669,-73.04724239],[-38.71022008,-73.04724938],[-38.7101222,-73.04724908],[-38.70999242,-73.04723],[-38.70995085,-73.04721457],[-38.70994039,-73.0479727],[-38.71062331,-73.04797632],[-38.71065512,-73.04706025]],"center":[-38.710332,-73.047314]},{"lote":18,"area_m2":5010,"coords":[[-38.7099404,-73.0479727],[-38.70993003,-73.04872953],[-38.71061327,-73.04873483],[-38.71061687,-73.04864218],[-38.71062331,-73.04797632],[-38.7099404,-73.0479727]],"center":[-38.710277,-73.048338]},{"lote":19,"area_m2":5000,"coords":[[-38.70993003,-73.04872953],[-38.70992725,-73.04893152],[-38.70989333,-73.04948405],[-38.71058368,-73.04949537],[-38.71059551,-73.04919132],[-38.71061327,-73.04873483],[-38.70993003,-73.04872953],[-38.70993003,-73.04872953]],"center":[-38.710175,-73.049003]},{"lote":20,"area_m2":5000,"coords":[[-38.71058368,-73.04949537],[-38.70989333,-73.04948405],[-38.70984833,-73.0502169],[-38.71055457,-73.05024378],[-38.71057504,-73.04971755],[-38.71058368,-73.04949537]],"center":[-38.71034,-73.049776]},{"lote":21,"area_m2":5000,"coords":[[-38.70938884,-73.04690872],[-38.70938749,-73.04710486],[-38.70938338,-73.04770044],[-38.7093814,-73.04798845],[-38.70994001,-73.04800063],[-38.7099404,-73.0479727],[-38.70995085,-73.04721457],[-38.70988113,-73.04718868],[-38.70960655,-73.04704105],[-38.70947956,-73.04697122],[-38.70938884,-73.04690872],[-38.70938884,-73.04690872]],"center":[-38.709593,-73.047326]},{"lote":22,"area_m2":5000,"coords":[[-38.70937495,-73.04892196],[-38.70973367,-73.04892817],[-38.70992725,-73.04893152],[-38.70994001,-73.04800063],[-38.7093814,-73.04798845],[-38.70937495,-73.04892196]],"center":[-38.709622,-73.048615]},{"lote":23,"area_m2":5010,"coords":[[-38.70944216,-73.05020221],[-38.70984833,-73.0502169],[-38.70992725,-73.04893152],[-38.70952432,-73.04892455],[-38.70944216,-73.05020221]],"center":[-38.709637,-73.049695]},{"lote":24,"area_m2":5220,"coords":[[-38.70856463,-73.04591696],[-38.70856454,-73.04602727],[-38.70856373,-73.04698599],[-38.70938749,-73.04710486],[-38.70938884,-73.04690872],[-38.70937612,-73.04689996],[-38.70925344,-73.04679126],[-38.70916685,-73.04669613],[-38.70900042,-73.04647476],[-38.70891561,-73.04634336],[-38.7088254,-73.04618788],[-38.70886672,-73.0460143],[-38.70856463,-73.04591696]],"center":[-38.708957,-73.046482]},{"lote":25,"area_m2":5000,"coords":[[-38.70856373,-73.04698599],[-38.70856317,-73.04765003],[-38.70938338,-73.04770044],[-38.70938749,-73.04710486],[-38.70856373,-73.04698599]],"center":[-38.708892,-73.047285]},{"lote":26,"area_m2":5000,"coords":[[-38.70938338,-73.04770044],[-38.70856317,-73.04765003],[-38.70856262,-73.04829922],[-38.70937913,-73.04831673],[-38.7093814,-73.04798845],[-38.70938338,-73.04770044]],"center":[-38.709109,-73.047943]},{"lote":27,"area_m2":5010,"coords":[[-38.70856262,-73.04829922],[-38.70856204,-73.04897012],[-38.70889723,-73.04894819],[-38.70937495,-73.04892196],[-38.70937913,-73.04831673],[-38.70856262,-73.04829922]],"center":[-38.70889,-73.048626]},{"lote":28,"area_m2":5020,"coords":[[-38.70937495,-73.04892196],[-38.70911457,-73.04893625],[-38.70903156,-73.05018736],[-38.70944216,-73.05020221],[-38.70952432,-73.04892455],[-38.70937495,-73.04892196]],"center":[-38.70931,-73.049349]},{"lote":29,"area_m2":5003,"coords":[[-38.70911457,-73.04893625],[-38.70903156,-73.05018736],[-38.70861219,-73.05017219],[-38.70869166,-73.04896163],[-38.70890308,-73.04894786],[-38.70911457,-73.04893625]],"center":[-38.708911,-73.049357]},{"lote":30,"area_m2":5760,"coords":[[-38.7080807,-73.04585005],[-38.70805085,-73.04703794],[-38.70856367,-73.0470669],[-38.70856373,-73.04698599],[-38.70856463,-73.04591696],[-38.70826255,-73.04581962],[-38.7080807,-73.04585005]],"center":[-38.70831,-73.046361]},{"lote":31,"area_m2":5010,"coords":[[-38.70805085,-73.04703794],[-38.70802579,-73.04803438],[-38.70856283,-73.04804614],[-38.70856317,-73.04765003],[-38.70856367,-73.0470669],[-38.70805085,-73.04703794]],"center":[-38.708303,-73.047479]},{"lote":32,"area_m2":5020,"coords":[[-38.70802579,-73.04803438],[-38.70800134,-73.0490068],[-38.70856204,-73.04897012],[-38.70856283,-73.04804614],[-38.70802579,-73.04803438]],"center":[-38.708236,-73.048418]},{"lote":33,"area_m2":5000,"coords":[[-38.70861219,-73.05017219],[-38.70869167,-73.04896163],[-38.70823835,-73.04899129],[-38.70819301,-73.05015703],[-38.70861219,-73.05017219]],"center":[-38.708469,-73.049691]},{"lote":34,"area_m2":6030,"coords":[[-38.7074616,-73.04592242],[-38.70748973,-73.04684253],[-38.70749322,-73.04695675],[-38.7080528,-73.0469604],[-38.7080807,-73.04585005],[-38.70758905,-73.04593231],[-38.7074616,-73.04592242]],"center":[-38.707661,-73.046341]},{"lote":35,"area_m2":5000,"coords":[[-38.70752307,-73.04793368],[-38.70802845,-73.04792865],[-38.70805085,-73.04703794],[-38.7080528,-73.0469604],[-38.70749322,-73.04695675],[-38.70752307,-73.04793368]],"center":[-38.707779,-73.047459]},{"lote":36,"area_m2":5000,"coords":[[-38.70752307,-73.04793368],[-38.70755675,-73.04903588],[-38.70800134,-73.0490068],[-38.70802579,-73.04803438],[-38.70802845,-73.04792865],[-38.70752307,-73.04793368]],"center":[-38.707776,-73.048312]},{"lote":37,"area_m2":5020,"coords":[[-38.70823835,-73.04899129],[-38.70777904,-73.04902134],[-38.70774133,-73.0501407],[-38.70819301,-73.05015703],[-38.70823835,-73.04899129]],"center":[-38.708038,-73.04946]},{"lote":38,"area_m2":6000,"coords":[[-38.7074616,-73.04592242],[-38.70741427,-73.04591874],[-38.70725959,-73.04588722],[-38.7070954,-73.04583761],[-38.70695909,-73.04579368],[-38.70684799,-73.04571518],[-38.70685013,-73.0468394],[-38.70748973,-73.04684253],[-38.7074616,-73.04592242]],"center":[-38.707204,-73.046075]},{"lote":39,"area_m2":5000,"coords":[[-38.70748973,-73.04684253],[-38.70685013,-73.0468394],[-38.70685163,-73.04762789],[-38.70751426,-73.04764529],[-38.70748973,-73.04684253],[-38.70748973,-73.04684253]],"center":[-38.707281,-73.047107]},{"lote":40,"area_m2":5000,"coords":[[-38.70685163,-73.04762789],[-38.70685311,-73.04840596],[-38.70753749,-73.04840536],[-38.70752307,-73.04793368],[-38.70751426,-73.04764529],[-38.70685163,-73.04762789]],"center":[-38.707189,-73.047941]},{"lote":41,"area_m2":5000,"coords":[[-38.70621189,-73.04663639],[-38.70626728,-73.04657424],[-38.70635095,-73.04645818],[-38.70648342,-73.04625236],[-38.70656553,-73.04617039],[-38.70661166,-73.04613794],[-38.7067729,-73.04609113],[-38.70684869,-73.0460839],[-38.70684799,-73.04571518],[-38.70682536,-73.04569918],[-38.70629832,-73.04529195],[-38.70619546,-73.04529648],[-38.70621189,-73.04663639]],"center":[-38.706499,-73.04608]},{"lote":42,"area_m2":5020,"coords":[[-38.70621189,-73.04663639],[-38.70621744,-73.04708979],[-38.7068506,-73.04708689],[-38.70685013,-73.0468394],[-38.70684869,-73.0460839],[-38.7067729,-73.04609113],[-38.70669228,-73.04611453],[-38.70661166,-73.04613794],[-38.70656553,-73.04617039],[-38.70648342,-73.04625236],[-38.70635095,-73.04645818],[-38.70626728,-73.04657424],[-38.70621189,-73.04663639]],"center":[-38.706533,-73.046475]},{"lote":43,"area_m2":5000,"coords":[[-38.70621744,-73.04708979],[-38.70622756,-73.0479163],[-38.70685216,-73.04790721],[-38.7068506,-73.04708689],[-38.70621744,-73.04708979]],"center":[-38.706473,-73.047418]},{"lote":44,"area_m2":5170,"coords":[[-38.70619546,-73.04529648],[-38.70607899,-73.04530161],[-38.70580882,-73.04523512],[-38.70579813,-73.04655868],[-38.70621232,-73.04667178],[-38.70619546,-73.04529648]],"center":[-38.706048,-73.045727]},{"lote":45,"area_m2":5540,"coords":[[-38.7061866,-73.04666476],[-38.70615649,-73.04669854],[-38.70608156,-73.04678454],[-38.70603593,-73.04687262],[-38.70599948,-73.04695489],[-38.70594677,-73.0471147],[-38.70589494,-73.04719532],[-38.70584578,-73.04723061],[-38.70570073,-73.04732068],[-38.7056146,-73.04739709],[-38.70553027,-73.04749287],[-38.70548204,-73.04757696],[-38.70547863,-73.04764781],[-38.70550202,-73.0478384],[-38.7054888,-73.04792797],[-38.70622756,-73.0479163],[-38.70621744,-73.04708979],[-38.70621232,-73.04667178],[-38.7061866,-73.04666476]],"center":[-38.705884,-73.047214]},{"lote":46,"area_m2":5110,"coords":[[-38.70579813,-73.04655868],[-38.70580882,-73.04523512],[-38.70541064,-73.04513712],[-38.70539427,-73.04644841],[-38.70579813,-73.04655868]],"center":[-38.705642,-73.045988]},{"lote":47,"area_m2":6360,"coords":[[-38.70603593,-73.04687262],[-38.70604578,-73.04685361],[-38.70608156,-73.04678454],[-38.70615649,-73.04669854],[-38.7061866,-73.04666476],[-38.70615341,-73.04665569],[-38.70579813,-73.04655868],[-38.70520369,-73.04639637],[-38.70519265,-73.04728815],[-38.7056146,-73.04739709],[-38.70570073,-73.04732068],[-38.70584578,-73.04723061],[-38.70589494,-73.04719532],[-38.70594677,-73.0471147],[-38.70597312,-73.0470348],[-38.70599948,-73.04695489],[-38.70603593,-73.04687262]],"center":[-38.705874,-73.046935]},{"lote":48,"area_m2":5100,"coords":[[-38.70541064,-73.04513712],[-38.70512491,-73.04506681],[-38.70499677,-73.04509453],[-38.70499624,-73.04633973],[-38.70539427,-73.04644841],[-38.70541064,-73.04513712]],"center":[-38.705222,-73.045537]},{"lote":49,"area_m2":5000,"coords":[[-38.70520369,-73.04639637],[-38.70499624,-73.04633973],[-38.70462166,-73.04623745],[-38.70461708,-73.04713099],[-38.70519265,-73.04728815],[-38.70520369,-73.04639637]],"center":[-38.704973,-73.046632]},{"lote":50,"area_m2":5140,"coords":[[-38.7045222,-73.04519018],[-38.70452949,-73.04621229],[-38.70499624,-73.04633973],[-38.70499677,-73.04509453],[-38.70456827,-73.04518723],[-38.7045222,-73.04519018]],"center":[-38.704689,-73.045536]}];
+
+// Estados — editar aquí: ES[5]={estado:'reservado',precio:28};
+const ES={};
+PD.forEach(l=>{ES[l.lote]={estado:'disponible',precio:0};});
+
+// Stats
+document.getElementById('nd3').textContent=PD.filter(l=>ES[l.lote].estado==='disponible').length;
+document.getElementById('nr3').textContent=PD.filter(l=>ES[l.lote].estado==='reservado').length;
+document.getElementById('nv3').textContent=PD.filter(l=>ES[l.lote].estado==='vendido').length;
+
+// Proyección GPS → plano local
+const LAT0=PD.reduce((s,l)=>s+l.center[0],0)/PD.length;
+const LNG0=PD.reduce((s,l)=>s+l.center[1],0)/PD.length;
+const SC=7000, COS=Math.cos(LAT0*Math.PI/180);
+const gx=(lng)=>(lng-LNG0)*SC*COS;
+const gz=(lat)=>-(lat-LAT0)*SC;
+
+// THREE
+const wrap3d=document.getElementById('wrap3d');const W=wrap3d.clientWidth||window.innerWidth,H=wrap3d.clientHeight||600;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x050C18);
+
+const cam=new THREE.PerspectiveCamera(50,W/H,0.1,1000);
+
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'),antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(W,H);
+
+scene.add(new THREE.AmbientLight(0xffffff,1));
+scene.add(new THREE.GridHelper(400,80,0x0c1b30,0x0c1b30));
+
+// Colores
+const COL={
+  disponible:{fill:0x1a5c30,wire:0x26d646},
+  reservado:{fill:0x5c3e00,wire:0xf59e0b},
+  vendido:{fill:0x5c1010,wire:0xef4444}
+};
+
+const meshes=[];
+
+PD.forEach(l=>{
+  const e=ES[l.lote]||{estado:'disponible'};
+  const col=COL[e.estado];
+
+  // Proyectar coordenadas GPS a plano local XZ
+  let pts=l.coords.map(([la,ln])=>[gx(ln),gz(la)]);
+
+  // Eliminar puntos duplicados consecutivos y el último si repite el primero
+  const clean=[];
+  for(let i=0;i<pts.length;i++){
+    const p=pts[i];
+    const prev=clean.length?clean[clean.length-1]:null;
+    if(!prev||Math.hypot(p[0]-prev[0],p[1]-prev[1])>0.01) clean.push(p);
+  }
+  // Quitar último si igual al primero
+  while(clean.length>1&&Math.hypot(clean[0][0]-clean[clean.length-1][0],clean[0][1]-clean[clean.length-1][1])<0.01) clean.pop();
+  if(clean.length<3)return;
+
+  // Earcut: triangulación robusta — aplana coords en [x,y,x,y,...] para earcut
+  const flat=clean.reduce((a,p)=>{a.push(p[0],p[1]);return a;},[]);
+  let tris;
+  try{ tris=earcut(flat); }catch(err){ return; }
+  if(!tris||tris.length<3)return;
+
+  // Construir BufferGeometry directamente en plano XZ (Y=0.05)
+  const verts=[];
+  for(let i=0;i<tris.length;i++){
+    const p=clean[tris[i]];
+    verts.push(p[0],0.05,p[1]);
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  geo.computeVertexNormals();
+
+  const mat=new THREE.MeshBasicMaterial({color:col.fill,side:THREE.DoubleSide});
+  const mesh=new THREE.Mesh(geo,mat);
+  let _A=0,_cx=0,_cz=0;
+  for(let i=0,j=clean.length-1;i<clean.length;j=i++){
+    const f=clean[j][0]*clean[i][1]-clean[i][0]*clean[j][1];
+    _A+=f;_cx+=(clean[j][0]+clean[i][0])*f;_cz+=(clean[j][1]+clean[i][1])*f;
+  }
+  _A*=0.5;_cx/=(6*_A);_cz/=(6*_A);
+  if(!isFinite(_cx)||!isFinite(_cz)){_cx=clean.reduce((s,p)=>s+p[0],0)/clean.length;_cz=clean.reduce((s,p)=>s+p[1],0)/clean.length;}
+  mesh.userData={lote:l.lote,area:l.area_m2,estado:e.estado,precio:e.precio,col,orig:col.fill,cx:_cx,cz:_cz};
+  scene.add(mesh);
+  meshes.push(mesh);
+
+  // Contorno en XZ
+  const ring=clean.map(p=>new THREE.Vector3(p[0],0.18,p[1]));
+  ring.push(ring[0].clone());
+  scene.add(new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(ring),
+    new THREE.LineBasicMaterial({color:col.wire,transparent:true,opacity:.9})
+  ));
+
+  // Centroide real ponderado por área (fórmula correcta para polígonos irregulares)
+  let A=0,cx=0,cz=0;
+  for(let i=0,j=clean.length-1;i<clean.length;j=i++){
+    const f=clean[j][0]*clean[i][1]-clean[i][0]*clean[j][1];
+    A+=f; cx+=(clean[j][0]+clean[i][0])*f; cz+=(clean[j][1]+clean[i][1])*f;
+  }
+  A*=0.5; cx/=(6*A); cz/=(6*A);
+  // Si centroide quedó fuera (área~0 o NaN), usar promedio simple
+  if(!isFinite(cx)||!isFinite(cz)){
+    cx=clean.reduce((s,p)=>s+p[0],0)/clean.length;
+    cz=clean.reduce((s,p)=>s+p[1],0)/clean.length;
+  }
+  const cv=document.createElement('canvas');
+  cv.width=80;cv.height=44;
+  const ctx=cv.getContext('2d');
+  ctx.font='bold 26px Arial';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.strokeStyle='rgba(0,0,0,.7)';ctx.lineWidth=4;ctx.strokeText(l.lote,40,22);
+  ctx.fillStyle='white';ctx.fillText(l.lote,40,22);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthTest:false}));
+  sp.scale.set(3,1.65,1);
+  sp.position.set(cx,2,cz);
+  scene.add(sp);
+});
+
+// CAMINO PÚBLICO — Line en XZ, se mueve con la órbita
+(function(){
+  var roadGPS=[[-38.71231764, -73.0460437], [-38.71183318, -73.04557342], [-38.71156687, -73.04531337], [-38.71132173, -73.04507522], [-38.71110611, -73.04486576], [-38.71082577, -73.04460798]];
+  var roadPts = roadGPS.map(function(p){
+    return new THREE.Vector3(gx(p[1]), 0.35, gz(p[0]));
+  });
+  // Línea de sombra (negra, más gruesa visualmente)
+  var shadowGeo = new THREE.BufferGeometry().setFromPoints(roadPts);
+  scene.add(new THREE.Line(shadowGeo,
+    new THREE.LineBasicMaterial({color:0x111111, transparent:true, opacity:.7})
+  ));
+  // Línea principal ámbar
+  var roadGeo = new THREE.BufferGeometry().setFromPoints(roadPts);
+  scene.add(new THREE.Line(roadGeo,
+    new THREE.LineBasicMaterial({color:0xE8B84B})
+  ));
+  // Label sprite en el centro
+  var mid = roadPts[Math.floor(roadPts.length/2)];
+  var cv2 = document.createElement('canvas');
+  cv2.width = 220; cv2.height = 44;
+  var ctx2 = cv2.getContext('2d');
+  ctx2.fillStyle = '#E8B84B';
+  ctx2.fillRect(0,0,220,44);
+  ctx2.font = 'bold 16px Arial';
+  ctx2.fillStyle = '#412402';
+  ctx2.textAlign = 'center';
+  ctx2.textBaseline = 'middle';
+  ctx2.fillText('Camino público Imperial–Carahue', 110, 22);
+  var roadSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: new THREE.CanvasTexture(cv2), transparent: true, depthTest: false
+  }));
+  roadSprite.scale.set(9, 1.8, 1);
+  roadSprite.position.set(mid.x + 4, 2.5, mid.z);
+  scene.add(roadSprite);
+})();
+
+// CAMINO PÚBLICO 3D — misma proyección que los lotes
+(function(){
+  var rc=[[-38.71245, -73.04598], [-38.71231, -73.04604], [-38.71183, -73.04557], [-38.71156, -73.04531], [-38.71132, -73.04507], [-38.7111, -73.04487], [-38.71082, -73.04461], [-38.7105, -73.0444]];
+  var pts3d=rc.map(function(p){return new THREE.Vector3(gx(p[1]),0.3,gz(p[0]));}); 
+  var roadGeo=new THREE.BufferGeometry().setFromPoints(pts3d);
+  // Línea principal ámbar gruesa
+  scene.add(new THREE.Line(roadGeo,new THREE.LineBasicMaterial({color:0xE8B84B,linewidth:3})));
+  // Línea de borde oscura (debajo, ligeramente más ancha visualmente)
+  var pts3d2=rc.map(function(p){return new THREE.Vector3(gx(p[1]),-0.05,gz(p[0]));}); 
+  var roadGeo2=new THREE.BufferGeometry().setFromPoints(pts3d2);
+  scene.add(new THREE.Line(roadGeo2,new THREE.LineBasicMaterial({color:0x5a4a10,linewidth:1,transparent:true,opacity:.6})));
+  // Label sprite del camino — centrado en el tramo medio
+  var midLat=(-38.71156+-38.71132)/2;
+  var midLng=(-73.04531+-73.04507)/2;
+  var cv=document.createElement('canvas');cv.width=200;cv.height=40;
+  var ctx=cv.getContext('2d');
+  ctx.fillStyle='rgba(232,184,75,.92)';
+  ctx.fillRect(0,0,200,40);
+  ctx.font='bold 13px Arial';ctx.fillStyle='#412402';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('CAMINO PÚBLICO',100,14);
+  ctx.font='11px Arial';
+  ctx.fillText('Imperial – Carahue',100,28);
+  var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthTest:false}));
+  sp.scale.set(8,1.6,1);
+  sp.position.set(gx(midLng)+4,2.5,gz(midLat));
+  scene.add(sp);
+})();
+
+// Órbita libre — theta(horizontal), phi(inclinación), radius
+let theta=0, phi=0.5, radius=75;
+let tTheta=0, tPhi=0.5, tRad=75;
+let lkX=0, lkZ=0, tLkX=0, tLkZ=0;
+let drag=false, ox=0, oy=0, moved=0;
+const mouse=new THREE.Vector2();
+const ray=new THREE.Raycaster();
+let hov=null, sel=null, aT=0;
+
+function setCam(){
+  cam.position.set(
+    lkX + radius*Math.sin(phi)*Math.sin(theta),
+    Math.max(1, radius*Math.cos(phi)),
+    lkZ + radius*Math.sin(phi)*Math.cos(theta)
+  );
+  cam.lookAt(lkX, 0, lkZ);
+  cam.updateProjectionMatrix();
+}
+setCam();
+
+const el=document.getElementById('canvas3d');
+el.addEventListener('mousedown',e=>{drag=true;ox=e.clientX;oy=e.clientY;moved=0;});
+window.addEventListener('mouseup',e=>{
+  if(moved<5){
+    const rect3dc=document.getElementById('canvas3d').getBoundingClientRect();
+    mouse.x=((e.clientX-rect3dc.left)/rect3dc.width)*2-1;
+    mouse.y=-((e.clientY-rect3dc.top)/rect3dc.height)*2+1;
+    ray.setFromCamera(mouse,cam);
+    const h=ray.intersectObjects(meshes,false);
+    if(h.length){
+      const ud=h[0].object.userData;
+      openP3d(ud);
+      tLkX=ud.cx; tLkZ=ud.cz; tRad=28; tPhi=0.35;
+      sel=h[0].object;
+    }
+  }
+  drag=false;
+});
+window.addEventListener('mousemove',e=>{
+  if(drag){
+    tTheta -= (e.clientX-ox)*0.008;
+    tPhi = Math.max(0.04, Math.min(1.45, tPhi-(e.clientY-oy)*0.006));
+    moved += Math.abs(e.clientX-ox)+Math.abs(e.clientY-oy);
+    ox=e.clientX; oy=e.clientY;
+  }
+  const rect3d=document.getElementById('canvas3d').getBoundingClientRect();
+  mouse.x=((e.clientX-rect3d.left)/rect3d.width)*2-1;
+  mouse.y=-((e.clientY-rect3d.top)/rect3d.height)*2+1;
+  ray.setFromCamera(mouse,cam);
+  const h=ray.intersectObjects(meshes,false);
+  const tt=document.getElementById('tt3d');
+  if(h.length&&!document.getElementById('panel3d').classList.contains('on')){
+    const ud=h[0].object.userData;
+    document.getElementById('ttt3d').textContent='Lote '+ud.lote;
+    const es=ud.estado==='disponible'?'Disponible':ud.estado==='reservado'?'Reservada':'Vendida';
+    document.getElementById('tts3d').textContent=(ud.area||0).toLocaleString('es-CL')+' m² · '+es;
+    const r3=document.getElementById('wrap3d').getBoundingClientRect();
+    tt.style.left=(e.clientX-r3.left+16)+'px'; tt.style.top=(e.clientY-r3.top-44)+'px';
+    tt.classList.add('on'); el.style.cursor='pointer';
+    if(hov!==h[0].object){if(hov&&hov!==sel)hov.material.color.setHex(hov.userData.orig);hov=h[0].object;}
+  } else {
+    tt.classList.remove('on'); el.style.cursor='default';
+    if(hov&&hov!==sel){hov.material.color.setHex(hov.userData.orig);hov=null;}
+  }
+});
+el.addEventListener('wheel',e=>{
+  tRad=Math.max(8,Math.min(200,tRad*(e.deltaY>0?1.09:.91)));
+  e.preventDefault();
+},{passive:false});
+
+// Touch
+let ti=0,tr=0;
+el.addEventListener('touchstart',e=>{
+  if(e.touches.length===1){drag=true;ox=e.touches[0].clientX;oy=e.touches[0].clientY;moved=0;}
+  else if(e.touches.length===2){ti=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY);tr=tRad;}
+},{passive:true});
+el.addEventListener('touchmove',e=>{
+  if(e.touches.length===1&&drag){
+    tTheta-=(e.touches[0].clientX-ox)*.009;
+    tPhi=Math.max(.04,Math.min(1.45,tPhi-(e.touches[0].clientY-oy)*.007));
+    moved+=Math.abs(e.touches[0].clientX-ox)+Math.abs(e.touches[0].clientY-oy);
+    ox=e.touches[0].clientX;oy=e.touches[0].clientY;
+  } else if(e.touches.length===2){
+    const d=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY);
+    tRad=Math.max(8,Math.min(200,tr*(ti/d)));
+  }
+},{passive:true});
+el.addEventListener('touchend',e=>{
+  if(moved<8&&e.changedTouches.length===1){
+    const t=e.changedTouches[0];
+    const rect3dt=document.getElementById('canvas3d').getBoundingClientRect();
+    mouse.x=((t.clientX-rect3dt.left)/rect3dt.width)*2-1;
+    mouse.y=-((t.clientY-rect3dt.top)/rect3dt.height)*2+1;
+    ray.setFromCamera(mouse,cam);
+    const h=ray.intersectObjects(meshes,false);
+    if(h.length)openP3d(h[0].object.userData);
+  }
+  drag=false;
+});
+
+function openP3d(ud){
+  const sm=ud.area||0,st=sm.toLocaleString('es-CL')+' m²';
+  const pt=ud.precio>0?'$'+ud.precio+' MM':'Consultar precio';
+  const el2=ud.estado==='disponible'?'Disponible':ud.estado==='reservado'?'Reservada':'Vendida';
+  const ec=ud.estado==='disponible'?'ed':ud.estado==='reservado'?'er':'ev';
+  document.getElementById('pey3d').textContent='ALTOS DE PEÑAFIEL · LOTE '+ud.lote;
+  document.getElementById('pt3d').textContent='Lote '+ud.lote;
+  document.getElementById('psup3d').textContent=st;
+  document.getElementById('ppr3d').textContent=pt;
+  const ec3=ud.estado==='disponible'?'p3-dis':ud.estado==='reservado'?'p3-res':'p3-ven';
+  const eEl=document.getElementById('pe3d');eEl.textContent=el2;eEl.className='p3-estado '+ec3;
+  document.getElementById('pwa3d').href='https://wa.me/56994447200?text='+encodeURIComponent('Hola, me interesa el Lote '+ud.lote+' de Altos de Peñafiel ('+st+'). ¿Me puede dar más información?');
+  document.getElementById('panel3d').classList.add('on');
+  document.getElementById('hint3d').style.opacity='0';
+}
+function closeP3d(){
+  document.getElementById('panel3d').classList.remove('on');
+  tRad=75; tPhi=0.5; tLkX=0; tLkZ=0;
+  if(sel){sel.material.color.setHex(sel.userData.orig);sel=null;}
+}
+window.closeP3d=closeP3d;
+
+function animate(){
+  requestAnimationFrame(animate);
+  aT+=.016;
+  theta+=(tTheta-theta)*.08;
+  phi+=(tPhi-phi)*.08;
+  radius+=(tRad-radius)*.07;
+  lkX+=(tLkX-lkX)*.07;
+  lkZ+=(tLkZ-lkZ)*.07;
+  setCam();
+  meshes.forEach(m=>{
+    if(m===hov||m===sel){
+      const p=.5+Math.sin(aT*4)*.5;
+      const col=new THREE.Color(m.userData.col.wire);
+      col.lerp(new THREE.Color(m.userData.orig),.35+p*.3);
+      m.material.color.set(col);
+    } else {
+      m.material.color.setHex(m.userData.orig);
+    }
+  });
+  renderer.render(scene,cam);
+}
+animate();
+
+window.addEventListener('resize',()=>{const w2=document.getElementById('wrap3d');if(w2){cam.aspect=w2.clientWidth/w2.clientHeight;cam.updateProjectionMatrix();renderer.setSize(w2.clientWidth,w2.clientHeight);}});
+setTimeout(()=>document.getElementById('hint3d').style.opacity='0',6000);
+
+}
+</script>
+<!-- ── WHATSAPP FLOTANTE ── -->
+<a href="https://wa.me/56994447200?text=%C2%A1Hola!%20Me%20interesa%20conocer%20m%C3%A1s%20sobre%20las%20parcelas%20en%20Altos%20de%20Pe%C3%B1afiel." 
+   class="wa-float" target="_blank" aria-label="Contactar por WhatsApp">
+  <span class="wa-float-label">¿Tienes dudas?</span>
+  <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+</body>
+</html>
